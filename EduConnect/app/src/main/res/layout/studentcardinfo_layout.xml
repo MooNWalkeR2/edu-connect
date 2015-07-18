@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android" android:animateLayoutChanges="true"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/card_view">
+
+    <RelativeLayout
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:id="@+id/card_rootlayout"
+        android:animateLayoutChanges="true">
+
+        <RelativeLayout android:id="@+id/card_relativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+
+                android:id="@+id/text_cardicon"
+                android:gravity="center"
+
+                android:textColor="#fff7fafa"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="8dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/relativeLayout_side"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/text_cardicon"
+                android:layout_toEndOf="@+id/text_cardicon"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hello_world"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="16sp"
+                    android:id="@+id/text_cardview_title"
+                    android:alpha="221" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/hello_world"
+                    android:id="@+id/text_cardview_desc"
+                    android:layout_below="@+id/text_cardview_title"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:alpha="140"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+
+                    android:id="@+id/binge_isreward"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+
+                    android:visibility="invisible" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_relativeLayout"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/relative_card_expandedarea"
+            android:animateLayoutChanges="true"
+            android:visibility="visible"
+            android:padding="8dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="90dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/hello_world"
+                    android:id="@+id/text_card_couponcode"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:alpha="180"
+                    android:textSize="16sp"
+                    android:padding="20dp"
+                    android:layout_centerHorizontal="true"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/hello_world"
+                    android:id="@+id/text_card_coupondesc"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_below="@+id/text_card_couponcode"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="20dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+
+                    android:id="@+id/text_card_coupongetmore"
+                    android:textSize="12sp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/image_fbshare"
+                    android:layout_toStartOf="@+id/image_fbshare"
+                    android:layout_marginRight="5dp" />
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/image_fbshare"
+
+                    android:background="@android:color/transparent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+
+                    android:scaleType="fitXY" />
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/image_sharecoupon"
+
+                    android:background="@android:color/transparent"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+
+                    android:scaleType="fitXY"
+                    android:visibility="gone"/>
+
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

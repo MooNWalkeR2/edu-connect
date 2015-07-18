@@ -1,0 +1,99 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:background="#cfd8dc">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log In"
+            android:textSize="24sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="80dp"
+            android:id="@+id/logintitle_activitymain"
+            android:textColor="#263238"/>
+
+        <!--<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/logintitle_activitymain"
+            android:text="Username"
+            android:textSize="18sp"
+            android:id="@+id/usernametitle_activitymain"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"/>-->
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/logintitle_activitymain"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="40dp"
+            android:hint="username"
+            android:id="@+id/usernameinput_activitymain"
+            android:textColor="#263238"/>
+
+        <!--<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textSize="18sp"
+            android:id="@+id/passwordtitle_activitymain"
+            android:layout_below="@id/usernameinput_activitymain"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"/>-->
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="password"
+            android:id="@+id/passwordinput_activitymain"
+            android:layout_below="@id/usernameinput_activitymain"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="40dp"
+            android:textColor="#263238"/>
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Log In"
+            android:padding="15dp"
+            android:textColor="#eceff1"
+            android:id="@+id/submitbutton_activitymain"
+            android:layout_below="@id/passwordinput_activitymain"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="45dp"
+            android:background="#263238"/>
+
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wrong Username and Password Combination!"
+            android:layout_centerHorizontal="true"
+            android:textSize="16sp"
+            android:id="@+id/wrongcomb_activitymain"
+            android:textColor="#e57373"
+            android:visibility="invisible"
+            />
+    </RelativeLayout>
+
+
+</LinearLayout>
