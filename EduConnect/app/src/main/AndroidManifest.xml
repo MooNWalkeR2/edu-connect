@@ -26,6 +26,12 @@
             android:name=".HomePageActivityTeacher"
             android:label="HomePageActivityTeacher" >
         </activity>
+
+        <activity
+            android:name=".TakeThisExam.TakeThisExam"
+            android:label="TakeThisExam" >
+        </activity>
+
     </application>
 
 </manifest>

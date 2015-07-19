@@ -4,169 +4,178 @@
     android:id="@+id/card_view">
 
     <RelativeLayout
-        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/card_rootlayout"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:layout_marginTop="15dp"
+        android:background="#e0f2f1">
 
-        <RelativeLayout android:id="@+id/card_relativeLayout"
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="8dp">
+            android:id="@+id/examname_studentcardinfo"
+            android:text="Telugu Chapter 1 Assessment"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:id="@+id/belowthis1"
+            android:layout_below="@id/examname_studentcardinfo"
+            android:layout_marginLeft="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_weight=".5"
+                android:orientation="vertical">
 
             <TextView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-
-                android:id="@+id/text_cardicon"
-                android:gravity="center"
-
-                android:textColor="#fff7fafa"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_margin="8dp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/relativeLayout_side"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/text_cardicon"
-                android:layout_toEndOf="@+id/text_cardicon"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/hello_world"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textSize="16sp"
-                    android:id="@+id/text_cardview_title"
-                    android:alpha="221" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/hello_world"
-                    android:id="@+id/text_cardview_desc"
-                    android:layout_below="@+id/text_cardview_title"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:alpha="140"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-
-                    android:id="@+id/binge_isreward"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-
-                    android:visibility="invisible" />
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <LinearLayout android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/card_relativeLayout"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/relative_card_expandedarea"
-            android:animateLayoutChanges="true"
-            android:visibility="visible"
-            android:padding="8dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_width="200dp"
-                    android:layout_height="90dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="@string/hello_world"
-                    android:id="@+id/text_card_couponcode"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:alpha="180"
-                    android:textSize="16sp"
-                    android:padding="20dp"
-                    android:layout_centerHorizontal="true"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/hello_world"
-                    android:id="@+id/text_card_coupondesc"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_below="@+id/text_card_couponcode"
-                    android:layout_centerHorizontal="true"
-                    android:layout_margin="20dp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true">
+                android:text="Assesment Type:"
+                android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Standard"
+                    android:id="@+id/assessmenttype_studentcardinfo"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_weight=".5"
+            android:orientation="vertical">
+
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Class:"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/class_studentcardinfo"
+                android:text="6th Class"
+                android:textSize="16sp"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/belowthis1"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:id="@+id/belowthis2"
+            android:layout_marginLeft="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Starting Date:"
+                    android:textSize="16sp"/>
 
-                    android:id="@+id/text_card_coupongetmore"
-                    android:textSize="12sp"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/image_fbshare"
-                    android:layout_toStartOf="@+id/image_fbshare"
-                    android:layout_marginRight="5dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:id="@+id/startingdate_studentcardinfo"
+                    android:text="7/7/2015 12:00:00 PM"/>
 
-                <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/image_fbshare"
+            </LinearLayout>
 
-                    android:background="@android:color/transparent"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ending Date:"
+                    android:textSize="16sp"/>
 
-                    android:scaleType="fitXY" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:id="@+id/endingdate_studentcardinfo"
+                    android:text="7/7/2015 12:00:00 PM"/>
 
-                <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/image_sharecoupon"
+            </LinearLayout>
+        </LinearLayout>
 
-                    android:background="@android:color/transparent"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@id/belowthis2"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp">
 
-                    android:scaleType="fitXY"
-                    android:visibility="gone"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Status:"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Not Completed"
+                    android:id="@+id/status_studentcardinfo"/>
 
 
 
-            </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".5">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="25dp"
+                    android:id="@+id/startorreview_studentcardinfo"
+                    android:background="#009688"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

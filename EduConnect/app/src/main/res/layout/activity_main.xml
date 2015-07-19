@@ -61,7 +61,8 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="40dp"
-            android:textColor="#263238"/>
+            android:textColor="#263238"
+            android:password="true"/>
 
         <Button
             android:layout_width="150dp"

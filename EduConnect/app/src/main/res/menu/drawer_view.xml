@@ -4,13 +4,13 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_first_fragment"
-            android:icon="@mipmap/ic_launcher"
-            android:title="Pending Exams"
+            android:icon="@mipmap/arrowitem"
+            android:title="Assigned Exams"
             android:checked="true"/>
         <item
             android:id="@+id/nav_second_fragment"
-            android:icon="@mipmap/ic_launcher"
-            android:title="Finished Exams" />
+            android:icon="@mipmap/arrowitem"
+            android:title="Completed Exams" />
 
     </group>
 </menu>

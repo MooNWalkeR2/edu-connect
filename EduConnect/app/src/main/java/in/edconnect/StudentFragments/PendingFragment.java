@@ -42,8 +42,8 @@ public class PendingFragment extends Fragment {
         StudentCardAdapter cardAdapter = new StudentCardAdapter(getActivity().getApplicationContext(),getActivity());
         recyclerView.setAdapter(cardAdapter);
 
-        cardAdapter.addItemToList();
-        cardAdapter.addItemToList(); //Arbitory Item
+        cardAdapter.addItemToList("Telugu Chapter 3 Assessment","Standard","6th class","7/7/2015 12:00:00 PM","7/8/2015 12:00:00 PM","Not Completed","Start");
+        cardAdapter.addItemToList("Telugu Chapter 2 Assessment","Standard","6th class","7/7/2015 12:00:00 PM","7/8/2015 12:00:00 PM","Not Completed","Start"); //Arbitory Item
 
 
         return rootView;

@@ -43,7 +43,7 @@ public class DoneFragment extends Fragment {
         StudentCardAdapter cardAdapter = new StudentCardAdapter(getActivity().getApplicationContext(),getActivity());
         recyclerView.setAdapter(cardAdapter);
 
-        cardAdapter.addItemToList();        //Arbitory Item
+        cardAdapter.addItemToList("Telugu Chapter 1 Assessment","Standard","6th class","7/7/2015 12:00:00 PM","7/8/2015 12:00:00 PM","Completed","Review");        //Arbitory Item
 
         return rootView;
     }

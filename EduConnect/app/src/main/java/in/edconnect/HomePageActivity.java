@@ -61,6 +61,11 @@ public class HomePageActivity extends AppCompatActivity {
         // Setup drawer view
         setupDrawerContent(nvDrawer);
 
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, PendingFragment.newInstance()).commit();
+        setTitle("Assigned Exams");
+
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
