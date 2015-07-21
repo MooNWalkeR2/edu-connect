@@ -1,16 +1,23 @@
 package in.edconnect.TakeThisExam;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import in.edconnect.HomePageActivity;
 import in.edconnect.R;
 
 /**
@@ -62,20 +69,53 @@ public class TakeThisExam extends Activity {
             public void onClick(View view) {
                 if (!(options.getCheckedRadioButtonId()==-1)) {
 
-                    if("option1".equals(options.getCheckedRadioButtonId())){
-                        answers.add(position,"1");
-                    }else if("option2".equals(options.getCheckedRadioButtonId())){
-                        answers.add(position,"2");
-                    }else if("option3".equals(options.getCheckedRadioButtonId())){
-                        answers.add(position,"3");
-                    }else if("option4".equals(options.getCheckedRadioButtonId())){
-                        answers.add(position,"4");
+
+                    if(option1.getId()==(options.getCheckedRadioButtonId())){
+                        answers.add(position, "1");
+
+                    }else if(option2.getId() == (options.getCheckedRadioButtonId())){
+                        answers.add(position, "2");
+
+                    }else if(option3.getId() == (options.getCheckedRadioButtonId())){
+                        answers.add(position, "3");
+
+                    }else if(option4.getId() == (options.getCheckedRadioButtonId())){
+                        answers.add(position, "4");
+
                     }
 
 
                     if(position+1<questionArrayList.size()){
                         position++;
                         changeQuestion(position);
+                    }else if(position+1 == questionArrayList.size()){
+                        final Dialog dialog = new Dialog(TakeThisExam.this);
+                        LayoutInflater li =(LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View v = li.inflate(R.layout.comfirmation_popup, null, false);
+                        dialog.setContentView(v);
+                        ListView listQuestions = (ListView)v.findViewById(R.id.comfirmation_questions);
+                        MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(TakeThisExam.this,questionArrayList,answers);
+                        listQuestions.setAdapter(adapter);
+                        dialog.setTitle("Confirm Answers!");
+
+                        Button goback = (Button)v.findViewById(R.id.goback);
+                        Button submit = (Button)v.findViewById(R.id.submit);
+
+                        goback.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                startActivity(new Intent(TakeThisExam.this, HomePageActivity.class));
+                                finish();
+                            }
+                        });
+                        dialog.show();
                     }
                 }else{
                     Toast.makeText(getApplicationContext(), "Please Select One Option!", Toast.LENGTH_SHORT).show();
@@ -86,7 +126,7 @@ public class TakeThisExam extends Activity {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(position+1<questionArrayList.size()){
+                if (position + 1 < questionArrayList.size()) {
                     position++;
                     changeQuestion(position);
                 }
@@ -118,6 +158,27 @@ public class TakeThisExam extends Activity {
         option2.setChecked(false);
         option3.setChecked(false);
         option4.setChecked(false);
+        options.clearCheck();
+
+        try{
+            switch (Integer.parseInt(answers.get(position))){
+                case 1:
+                    option1.setChecked(true);
+                    break;
+                case 2:
+                    option2.setChecked(true);
+                    break;
+                case 3:
+                    option3.setChecked(true);
+                    break;
+                case 4:
+                    option4.setChecked(true);
+                    break;
+                default:
+                    break;
+            }
+        }catch (Exception en){}
+
     }
 
     @Override
