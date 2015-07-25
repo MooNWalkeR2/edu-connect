@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import in.edconnect.R;
 import in.edconnect.StudentFragments.ViewAdapters.StudentCardAdapter;
+import in.edconnect.StudentFragments.ViewAdapters.StudentCardAdapter1;
 
 /**
  * Created by admin on 7/18/2015.
@@ -40,7 +41,7 @@ public class DoneFragment extends Fragment {
         linearLayoutManager.setOrientation(LinearLayout.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        StudentCardAdapter cardAdapter = new StudentCardAdapter(getActivity().getApplicationContext(),getActivity());
+        StudentCardAdapter1 cardAdapter = new StudentCardAdapter1(getActivity().getApplicationContext(),getActivity());
         recyclerView.setAdapter(cardAdapter);
 
         cardAdapter.addItemToList("Telugu Chapter 1 Assessment","Standard","6th class","7/7/2015 12:00:00 PM","7/8/2015 12:00:00 PM","Completed","Review");        //Arbitory Item

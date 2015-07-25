@@ -22,7 +22,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
             android:textColor="#000000"
-            android:id="@+id/question"/>
+            android:id="@+id/question"
+            android:padding="10dp"/>
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -30,40 +31,46 @@
             android:layout_marginTop="40dp"
             android:background="#b2dfdb"
             android:id="@+id/options"
+
             >
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gujarat"
-                android:layout_gravity="center"
+                android:layout_gravity="left"
                 android:layout_marginTop="15dp"
-                android:id="@+id/option1"/>
+                android:id="@+id/option1"
+                android:layout_marginLeft="10dp"
+                />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Delhi"
-                android:layout_gravity="center"
+                android:layout_gravity="left"
                 android:layout_marginTop="15dp"
-                android:id="@+id/option2"/>
+                android:id="@+id/option2"
+                android:layout_marginLeft="10dp"/>
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="UP"
-                android:layout_gravity="center"
+                android:layout_gravity="left"
                 android:layout_marginTop="15dp"
-                android:id="@+id/option3"/>
+                android:id="@+id/option3"
+                android:layout_marginLeft="10dp"/>
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Goa"
-                android:layout_gravity="center"
+                android:layout_gravity="left"
                 android:layout_marginTop="15dp"
                 android:id="@+id/option4"
-                android:layout_marginBottom="25dp"/>
+                android:layout_marginBottom="25dp"
+                android:layout_marginLeft="10dp"/>
 
 
         </RadioGroup>

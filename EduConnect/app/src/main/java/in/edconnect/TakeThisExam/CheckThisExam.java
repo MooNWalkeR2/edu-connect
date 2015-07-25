@@ -30,7 +30,7 @@ import in.edconnect.R;
 /**
  * Created by admin on 7/19/2015.
  */
-public class TakeThisExam extends Activity {
+public class CheckThisExam extends Activity {
 
     ArrayList<Question> questionArrayList;
     TextView question,reference;
@@ -55,6 +55,8 @@ public class TakeThisExam extends Activity {
         submit = (Button)findViewById(R.id.submit);
         options = (RadioGroup)findViewById(R.id.options);
         reference = (TextView)findViewById(R.id.referencePar);
+        option3.setChecked(true);
+
 
         Typeface faceGautami = Typeface.createFromAsset(getAssets(),
                 "gautami.ttf");
@@ -69,13 +71,13 @@ public class TakeThisExam extends Activity {
         //Add all the question to arraylist\
         try{
 
-        questionArrayList.add(new Question("What is the capital of India?","Gujarat","Delhi","UP","Kerala","This is a reference paragraph for you . You have to answer the questions after reading this paragraph"));
-        questionArrayList.add(new Question("The Centre for Cellular and Molecular Biology is situated at?","Patna","Jaipur","Jammu Kashmir","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
-        questionArrayList.add(new Question("The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
-        questionArrayList.add(new Question("What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
-        questionArrayList.add(new Question("Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", ""));
-        questionArrayList.add(new Question("For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", ""));
-        questionArrayList.add(new Question("Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", ""));
+            questionArrayList.add(new Question("What is the capital of India?","Gujarat","Delhi","UP","Kerala","This is a reference paragraph for you . You have to answer the questions after reading this paragraph"));
+            questionArrayList.add(new Question("The Centre for Cellular and Molecular Biology is situated at?","Patna","Jaipur","Jammu Kashmir","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
+            questionArrayList.add(new Question("The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
+            questionArrayList.add(new Question("What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
+            questionArrayList.add(new Question("Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", ""));
+            questionArrayList.add(new Question("For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", ""));
+            questionArrayList.add(new Question("Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", ""));
         }catch(Exception en){}
 
 
@@ -107,12 +109,12 @@ public class TakeThisExam extends Activity {
                         position++;
                         changeQuestion(position);
                     }else if(position+1 == questionArrayList.size()){
-                        final Dialog dialog = new Dialog(TakeThisExam.this);
+                        final Dialog dialog = new Dialog(CheckThisExam.this);
                         LayoutInflater li =(LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View v = li.inflate(R.layout.comfirmation_popup, null, false);
                         dialog.setContentView(v);
                         ListView listQuestions = (ListView)v.findViewById(R.id.comfirmation_questions);
-                        MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(TakeThisExam.this,questionArrayList,answers);
+                        MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(CheckThisExam.this,questionArrayList,answers);
                         listQuestions.setAdapter(adapter);
                         dialog.setTitle("Confirm Answers!");
 
@@ -129,7 +131,7 @@ public class TakeThisExam extends Activity {
                         submit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                startActivity(new Intent(TakeThisExam.this, HomePageActivity.class));
+                                startActivity(new Intent(CheckThisExam.this, HomePageActivity.class));
                                 finish();
                             }
                         });
@@ -182,7 +184,9 @@ public class TakeThisExam extends Activity {
         option2.setChecked(false);
         option3.setChecked(false);
         option4.setChecked(false);
+
         options.clearCheck();
+        option3.setChecked(true);
 
         try{
             switch (Integer.parseInt(answers.get(position))){
@@ -199,6 +203,7 @@ public class TakeThisExam extends Activity {
                     option4.setChecked(true);
                     break;
                 default:
+                    option3.setChecked(true);
                     break;
             }
         }catch (Exception en){}

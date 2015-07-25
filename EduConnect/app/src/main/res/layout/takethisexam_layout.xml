@@ -11,22 +11,29 @@
     android:layout_marginTop="15dp">
 
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16sp"
+        android:padding="15dp"
+        android:id="@+id/referencePar"/>
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="What is the capital of India?"
+        android:text="1. భారతదేశంలో నూతనంగా ఏర్పడిన రాష్ట్రం ఏది?"
         android:layout_gravity="center"
         android:layout_marginTop="25dp"
         android:textColor="#000000"
-        android:id="@+id/question"/>
+        android:id="@+id/question"
+        android:padding="10dp"/>
 
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:background="#b2dfdb"
         android:id="@+id/options"
         >
@@ -34,32 +41,36 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gujarat"
-            android:layout_gravity="center"
+            android:text="చత్తీస్ ఘడ్"
+            android:layout_gravity="left"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:id="@+id/option1"/>
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Delhi"
-            android:layout_gravity="center"
+            android:text="జార్ఖండ్   "
+            android:layout_gravity="left"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:id="@+id/option2"/>
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="UP"
-            android:layout_gravity="center"
+            android:text="తెలంగాణ   "
+            android:layout_gravity="left"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:id="@+id/option3"/>
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Goa"
-            android:layout_gravity="center"
+            android:text="ఉత్తరాఖండ్			"
+            android:layout_gravity="left"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:id="@+id/option4"
             android:layout_marginBottom="25dp"/>

@@ -1,6 +1,8 @@
 package in.edconnect;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,7 +23,7 @@ import java.util.HashMap;
 import in.edconnect.JsonRequest.NewCustomJsonRequest;
 
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+public class  MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     private EditText username , password;
     private Button loginbutton;
@@ -40,7 +42,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         wrongcomb = (TextView) findViewById(R.id.wrongcomb_activitymain);
 
 
-        loginbutton.setOnClickListener(this);
+
+       loginbutton.setOnClickListener(this);
 
 
 
@@ -138,7 +141,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         if(username.equals("preet") && password.equals("preet")){
             status = true;
             studentornot = 1;
-        }else if(username.equals("rathin") && password.equals("rathin")){
+        }else if(username.equals("sombabu") && password.equals("sombabu")){
             status = true;
             studentornot = 1;
         }else if(username.equals("subbarao") && password.equals("subbarao")){

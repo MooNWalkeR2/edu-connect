@@ -18,12 +18,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import in.edconnect.R;
+import in.edconnect.TakeThisExam.CheckThisExam;
 import in.edconnect.TakeThisExam.TakeThisExam;
 
 /**
  * Created by admin on 7/19/2015.
  */
-public class StudentCardAdapter extends RecyclerView.Adapter<StudentCardAdapter.StudentCardHolder>  implements View.OnClickListener {
+public class StudentCardAdapter1 extends RecyclerView.Adapter<StudentCardAdapter1.StudentCardHolder>  implements View.OnClickListener {
 
     private Context context;
     private Activity activity;
@@ -31,7 +32,7 @@ public class StudentCardAdapter extends RecyclerView.Adapter<StudentCardAdapter.
     private Animation cardintro;
     private CardView cardView;
 
-    public StudentCardAdapter(Context context,Activity activity){
+    public StudentCardAdapter1(Context context,Activity activity){
         this.context = context;
         this.activity = activity;
         studentInfo = new ArrayList<>();
@@ -52,7 +53,7 @@ public class StudentCardAdapter extends RecyclerView.Adapter<StudentCardAdapter.
     }
 
     @Override
-    public StudentCardAdapter.StudentCardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StudentCardAdapter1.StudentCardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         try {
             Log.e("Here","0");
             View itemView = LayoutInflater.from(parent.getContext())
@@ -60,7 +61,7 @@ public class StudentCardAdapter extends RecyclerView.Adapter<StudentCardAdapter.
             Log.e("Here","1");
             StudentCardHolder holder = new StudentCardHolder(itemView);
             Log.e("Here", "2");
-            holder.itemView.setOnClickListener(StudentCardAdapter.this);
+            holder.itemView.setOnClickListener(StudentCardAdapter1.this);
             holder.itemView.setTag(holder);
             Log.e("Here", "3");
             cardintro = AnimationUtils.loadAnimation(context, R.anim.cardintro);
@@ -77,7 +78,7 @@ public class StudentCardAdapter extends RecyclerView.Adapter<StudentCardAdapter.
     }
 
     @Override
-    public void onBindViewHolder(StudentCardAdapter.StudentCardHolder holder, int position) {
+    public void onBindViewHolder(StudentCardAdapter1.StudentCardHolder holder, int position) {
 
         StudentCardInfo studentCardInfo =  studentInfo.get(position);
         holder.examname.setText(studentCardInfo.examname);
@@ -93,8 +94,7 @@ public class StudentCardAdapter extends RecyclerView.Adapter<StudentCardAdapter.
             public void onClick(View view) {
 
 
-
-                context.startActivity(new Intent(activity, TakeThisExam.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                context.startActivity(new Intent(activity, CheckThisExam.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 activity.finish();
             }
         });
