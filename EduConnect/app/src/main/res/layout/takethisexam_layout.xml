@@ -3,6 +3,12 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -11,25 +17,32 @@
     android:layout_marginTop="15dp">
 
 
+
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="16sp"
+        android:textSize="19sp"
         android:padding="15dp"
-        android:id="@+id/referencePar"/>
+        android:id="@+id/referencePar"
+        android:textIsSelectable="true"
+        android:bufferType="spannable"/>
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textIsSelectable="true"
         android:textSize="20sp"
         android:text="1. భారతదేశంలో నూతనంగా ఏర్పడిన రాష్ట్రం ఏది?"
         android:layout_gravity="center"
         android:layout_marginTop="25dp"
         android:textColor="#000000"
         android:id="@+id/question"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:inputType="none"
+        android:editable="false"/>
 
     <RadioGroup
         android:layout_width="match_parent"
@@ -117,7 +130,78 @@
 
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="25dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight=".5">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:layout_margin="2.5dp"
+            android:text="Calculator"
+            android:id="@+id/calculator"
+            android:background="#b2dfdb"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:layout_margin="2.5dp"
+            android:text="Protractor"
+            android:id="@+id/protractor"
+            android:background="#b2dfdb"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight=".5"
+            >
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:layout_margin="2.5dp"
+            android:text="Highlight"
+            android:id="@+id/highlight"
+            android:background="#b2dfdb"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:layout_margin="2.5dp"
+            android:text="Scale"
+            android:background="#b2dfdb"
+            android:id="@+id/scale"/>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+
 
 </LinearLayout>
+
+
+        <ImageView
+            android:layout_width="210dp"
+            android:layout_height="120dp"
+            android:background="@drawable/protractor"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/protractorimage"/>
+
+    </RelativeLayout>
 
 </ScrollView>

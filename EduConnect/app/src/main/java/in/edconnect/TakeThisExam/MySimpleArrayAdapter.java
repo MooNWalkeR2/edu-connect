@@ -64,6 +64,8 @@ public class MySimpleArrayAdapter extends BaseAdapter {
 
 
             switch (Integer.parseInt(answers.get(position))) {
+                case 0:
+                    break;
                 case 1:
                     option1.setChecked(true);
                     break;
@@ -76,6 +78,7 @@ public class MySimpleArrayAdapter extends BaseAdapter {
                 case 4:
                     option4.setChecked(true);
                     break;
+
             }
         }catch (Exception en){
             Log.e("Pos", " " + position + " " + answers.size());
