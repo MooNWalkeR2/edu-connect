@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -43,6 +44,7 @@ import java.util.Locale;
 import in.edconnect.HomePageActivity;
 import in.edconnect.R;
 import in.edconnect.SelectableTextView.SelectableTextView;
+import in.edconnect.TextView.CustomTextView;
 import in.edconnect.TouchImageView.TouchImageView;
 
 /**
@@ -61,6 +63,7 @@ public class TakeThisExam extends Activity {
     ImageView protractorImage;
     int _xDelta,_yDelta;
     SharedPreferences highlightText;
+    LinearLayout match;
 
     @Override
     public void onCreate(Bundle bundle){
@@ -82,6 +85,7 @@ public class TakeThisExam extends Activity {
         highlight = (Button)findViewById(R.id.highlight);
         scale = (Button)findViewById(R.id.scale);
         protractorImage = (ImageView)findViewById(R.id.protractorimage);
+        match = (LinearLayout)findViewById(R.id.match);
 
         protractorImage.setVisibility(View.INVISIBLE);
         highlightText= PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -97,16 +101,19 @@ public class TakeThisExam extends Activity {
 
         //Add here volley request to fetch all the question and options related to this quiz
 
-        //Add all the question to arraylist\
+        //Add all the question to arraylist
+        //in that while loop check if the question is match the following or not if it is then set it
         try{
 
-        questionArrayList.add(new Question(1,"What is the capital of India?","Gujarat","Delhi","UP","Kerala","This is a reference paragraph for you . You have to answer the questions after reading this paragraph"));
-        questionArrayList.add(new Question(2,"The Centre for Cellular and Molecular Biology is situated at?","Patna","Jaipur","Jammu Kashmir","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
-        questionArrayList.add(new Question(3,"The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
-        questionArrayList.add(new Question(4,"What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
-        questionArrayList.add(new Question(5,"Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", ""));
-        questionArrayList.add(new Question(6,"For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", ""));
-        questionArrayList.add(new Question(7,"Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", ""));
+        questionArrayList.add(new Question(1,"What is the capital of India?","Gujarat","Delhi","UP","Kerala","This is a reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+        questionArrayList.add(new Question(2,"The Centre for Cellular and Molecular Biology is situated at?","Patna","Jaipur","Jammu Kashmir","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+        questionArrayList.add(new Question(3,"The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+        questionArrayList.add(new Question(4,"What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+        questionArrayList.add(new Question(5,"Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", "",0));
+        questionArrayList.add(new Question(6,"For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", "",1));
+        questionArrayList.add(new Question(7,"Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", "",0));
+            questionArrayList.get(5).setMatch("one", "two", "three", "four", "five", "2", "1", "5", "4", "3");
+
         }catch(Exception en){}
 
 
@@ -138,44 +145,10 @@ public class TakeThisExam extends Activity {
                         position++;
                         changeQuestion(position);
                     }else if(position+1 == questionArrayList.size()){
-                        int go=0;
-                        for(String answer:answers){
-                            if(!answer.equals("0")){
-                                go=1;
-                            }
-                        }
-                        if(go==0){
-                            Toast.makeText(getApplicationContext(),"Please answer at least one question!",Toast.LENGTH_SHORT).show();
-                        }else {
-                            final Dialog dialog = new Dialog(TakeThisExam.this);
-                            LayoutInflater li = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            View v = li.inflate(R.layout.comfirmation_popup, null, false);
-                            dialog.setContentView(v);
-                            ListView listQuestions = (ListView) v.findViewById(R.id.comfirmation_questions);
-                            MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(TakeThisExam.this, questionArrayList, answers);
-                            listQuestions.setAdapter(adapter);
-                            dialog.setTitle("Confirm Answers!");
 
-                            Button goback = (Button) v.findViewById(R.id.goback);
-                            Button submit = (Button) v.findViewById(R.id.submit);
 
-                            goback.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    dialog.dismiss();
-                                }
-                            });
+                          showMeTheDialog();
 
-                            submit.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    highlightText.edit().clear().commit();
-                                    startActivity(new Intent(TakeThisExam.this, HomePageActivity.class));
-                                    finish();
-                                }
-                            });
-                            dialog.show();
-                        }
                     }
                 }else{
                     Toast.makeText(getApplicationContext(), "Please Select One Option!", Toast.LENGTH_SHORT).show();
@@ -193,6 +166,19 @@ public class TakeThisExam extends Activity {
                 if (position + 1 < questionArrayList.size()) {
                     position++;
                     changeQuestion(position);
+                }else{
+                    int check=0;
+                    for(String ans:answers){
+                        if(ans.equals("0")){
+
+                        }else{
+                            check=1;
+                        }
+                    }
+                    if(check==0){
+                        Toast.makeText(getApplicationContext(),"You haven't selected any answers!",Toast.LENGTH_SHORT).show();
+                        showMeTheDialog();
+                    }
                 }
             }
         });
@@ -227,11 +213,11 @@ public class TakeThisExam extends Activity {
             @Override
             public void onClick(View view) {
                 if (protractorImage.getVisibility() == View.INVISIBLE) {
-                    Toast.makeText(getApplicationContext(),"VISIBLE",Toast.LENGTH_SHORT).show();
+
                     protractorImage.setVisibility(View.VISIBLE);
                 } else {
-                    Toast.makeText(getApplicationContext(),"INVISIBLE",Toast.LENGTH_SHORT).show();
-                    protractorImage.setVisibility(View.VISIBLE);
+
+                    protractorImage.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -309,6 +295,17 @@ public class TakeThisExam extends Activity {
         Question questionCurrent = questionArrayList.get(position);
 
 
+        if(questionCurrent.matchFollowing==1){
+            options.setVisibility(View.GONE);
+            match.setVisibility(View.VISIBLE);
+            matchFollwing(questionCurrent);
+            return;
+        }
+
+        match.setVisibility(View.GONE);
+        options.setVisibility(View.VISIBLE);
+
+
         try {
 
             question.setText(questionCurrent.question);
@@ -368,5 +365,75 @@ public class TakeThisExam extends Activity {
     public void onDestroy(){
         super.onDestroy();
 
+    }
+
+
+    public void matchFollwing(Question questionCurrent){
+
+        TextView row12,row13,row14,row15,row21,row22,row23,row24,row25;
+        CustomTextView row11;
+        EditText answer1,answer2,answer3,answer4,answer5;
+
+        Typeface typeface = Typeface.createFromAsset(getAssets(),"gautami.ttf");
+
+        row11 =(CustomTextView)findViewById(R.id.row11);
+
+        row12 =(TextView)findViewById(R.id.row12);
+        row13 =(TextView)findViewById(R.id.row13);
+        row14 =(TextView)findViewById(R.id.row14);
+        row15 =(TextView)findViewById(R.id.row15);
+        row21 =(TextView)findViewById(R.id.row21);
+        row22 =(TextView)findViewById(R.id.row22);
+        row23 =(TextView)findViewById(R.id.row23);
+        row24 =(TextView)findViewById(R.id.row24);
+        row25 =(TextView)findViewById(R.id.row25);
+
+
+
+
+        row11.setText("Nahii???????");
+        row12.setText(questionCurrent.row12);
+        row13.setText(questionCurrent.row13);
+        row14.setText(questionCurrent.row14);
+        row15.setText(questionCurrent.row15);
+
+        row21.setText(questionCurrent.row21);
+        row22.setText(questionCurrent.row22);
+        row23.setText(questionCurrent.row23);
+        row24.setText(questionCurrent.row24);
+        row25.setText(questionCurrent.row25);
+
+    }
+
+
+    public void showMeTheDialog(){
+        final Dialog dialog = new Dialog(TakeThisExam.this);
+        LayoutInflater li = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = li.inflate(R.layout.comfirmation_popup, null, false);
+        dialog.setContentView(v);
+        ListView listQuestions = (ListView) v.findViewById(R.id.comfirmation_questions);
+        MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(TakeThisExam.this, questionArrayList, answers);
+        listQuestions.setAdapter(adapter);
+        dialog.setTitle("Confirm Answers!");
+
+        Button goback = (Button) v.findViewById(R.id.goback);
+        Button submit = (Button) v.findViewById(R.id.submit);
+
+        goback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                highlightText.edit().clear().commit();
+                startActivity(new Intent(TakeThisExam.this, HomePageActivity.class));
+                finish();
+            }
+        });
+        dialog.show();
     }
 }

@@ -39,19 +39,19 @@ public class CheckThisExam extends Activity{
 
         //////Get this answersheet from web services
 
-        questionsList.add(new Question(1,"What is the capital of India?", "Gujarat", "Delhi", "UP", "Kerala", "This is a reference paragraph for you . You have to answer the questions after reading this paragraph"));
+        questionsList.add(new Question(1,"What is the capital of India?", "Gujarat", "Delhi", "UP", "Kerala", "This is a reference paragraph for you . You have to answer the questions after reading this paragraph",0));
         answers.add(0,"1");
-        questionsList.add(new Question(2,"The Centre for Cellular and Molecular Biology is situated at?", "Patna", "Jaipur", "Jammu Kashmir", "Kerala", "This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
+        questionsList.add(new Question(2,"The Centre for Cellular and Molecular Biology is situated at?", "Patna", "Jaipur", "Jammu Kashmir", "Kerala", "This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
         answers.add(1,"2");
-        questionsList.add(new Question(3,"The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
+        questionsList.add(new Question(3,"The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
         answers.add(2,"1");
-        questionsList.add(new Question(4,"What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph"));
+        questionsList.add(new Question(4,"What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
         answers.add(3,"4");
-        questionsList.add(new Question(5,"Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", ""));
+        questionsList.add(new Question(5,"Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", "",0));
         answers.add(4,"3");
-        questionsList.add(new Question(6,"For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", ""));
+        questionsList.add(new Question(6,"For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", "",0));
         answers.add(5, "2");
-        questionsList.add(new Question(7,"Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", ""));
+        questionsList.add(new Question(7,"Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", "",0));
 
 
         changeQuestion(0);
