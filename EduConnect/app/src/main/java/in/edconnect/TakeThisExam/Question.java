@@ -12,8 +12,9 @@ public class Question {
     byte[] ques;
     int matchFollowing;
     String row11,row12,row13,row14,row15,row21,row22,row23,row24,row25;
+    int groupID;
 
-    public  Question(int num,String question,String option1,String option2,String option3,String option4,String referencePar,int matchFollowing){
+    public  Question(int num,int groupID,String question,String option1,String option2,String option3,String option4,String referencePar,int matchFollowing){
         this.question = question;
         this.option1 = option1;
         this.option2 = option2;
@@ -24,6 +25,7 @@ public class Question {
         try {
             ques = "?????????? ??????? ??????? ???????? ????".getBytes("UTF-16LE");
         }catch (Exception en){}
+        this.groupID=groupID;
 
     }
 

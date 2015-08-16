@@ -8,9 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.Spannable;
@@ -22,6 +26,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,14 +61,22 @@ public class TakeThisExam extends Activity {
     TextView question;
     TextView reference;
     RadioButton option1,option2,option3,option4;
-    Button previous,skip,submit,calculator,protractor,highlight,scale;
+    Button previous,skip,submit,calculator,protractor,highlight,scale,rotate;
     RadioGroup options;
     private int position;
     ArrayList<String> answers;
     ImageView protractorImage;
     int _xDelta,_yDelta;
     SharedPreferences highlightText;
-    LinearLayout match;
+    LinearLayout match,rotationcontroller;
+    int rotationCon=0;
+    int dialerHeight,dialerWidth;
+    Bitmap imageOriginal,imageScaled;
+    double startAngle;
+    Matrix matrix;
+    int temp=0;
+    ArrayList<HighlightText> highlightTextArrayList=new ArrayList<>();
+    MalibuCountDownTimer countDownTimer ;
 
     @Override
     public void onCreate(Bundle bundle){
@@ -86,6 +99,22 @@ public class TakeThisExam extends Activity {
         scale = (Button)findViewById(R.id.scale);
         protractorImage = (ImageView)findViewById(R.id.protractorimage);
         match = (LinearLayout)findViewById(R.id.match);
+        rotationcontroller = (LinearLayout)findViewById(R.id.protractorcontroller);
+        rotate = (Button)findViewById(R.id.rotate);
+
+
+
+
+        if (imageOriginal == null) {
+            imageOriginal = BitmapFactory.decodeResource(getResources(), R.drawable.protractor);
+        }
+
+        if (matrix == null) {
+            matrix = new Matrix();
+        } else {
+            // not needed, you can also post the matrix immediately to restore the old state
+            matrix.reset();
+        }
 
         protractorImage.setVisibility(View.INVISIBLE);
         highlightText= PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -105,16 +134,34 @@ public class TakeThisExam extends Activity {
         //in that while loop check if the question is match the following or not if it is then set it
         try{
 
-        questionArrayList.add(new Question(1,"What is the capital of India?","Gujarat","Delhi","UP","Kerala","This is a reference paragraph for you . You have to answer the questions after reading this paragraph",0));
-        questionArrayList.add(new Question(2,"The Centre for Cellular and Molecular Biology is situated at?","Patna","Jaipur","Jammu Kashmir","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
-        questionArrayList.add(new Question(3,"The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
-        questionArrayList.add(new Question(4,"What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
-        questionArrayList.add(new Question(5,"Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", "",0));
-        questionArrayList.add(new Question(6,"For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", "",1));
-        questionArrayList.add(new Question(7,"Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", "",0));
+
+            //if reference bar is not empty and if it is not already added then add it to array list
+            questionArrayList.add(new Question(1,0,"What is the capital of India?","Gujarat","Delhi","UP","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+            highlightTextArrayList.add(new HighlightText(0));
+            questionArrayList.add(new Question(2,0,"The Centre for Cellular and Molecular Biology is situated at?","Patna","Jaipur","Jammu Kashmir","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+            highlightTextArrayList.add(new HighlightText(0));
+            questionArrayList.add(new Question(3,0,"The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+            highlightTextArrayList.add(new HighlightText(0));
+            questionArrayList.add(new Question(4,0,"What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+            highlightTextArrayList.add(new HighlightText(0));
+            questionArrayList.add(new Question(5,1,"Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", "",0));
+            highlightTextArrayList.add(new HighlightText(1));
+            questionArrayList.add(new Question(6,2,"For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", "",1));
+            highlightTextArrayList.add(new HighlightText(2));
+            questionArrayList.add(new Question(7,3,"Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", "",0));
+            highlightTextArrayList.add(new HighlightText(3));
             questionArrayList.get(5).setMatch("one", "two", "three", "four", "five", "2", "1", "5", "4", "3");
 
-        }catch(Exception en){}
+        }catch(Exception en){
+            Log.e("5",highlightTextArrayList.size()+" "+en.toString());
+        }
+
+
+
+        //////////  assign time taken from web services
+
+        countDownTimer= new MalibuCountDownTimer(100000,1000);
+        countDownTimer.start();
 
 
         position=0;
@@ -208,24 +255,96 @@ public class TakeThisExam extends Activity {
             }
         });
 
-
-        protractor.setOnClickListener(new View.OnClickListener() {
+        rotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (protractorImage.getVisibility() == View.INVISIBLE) {
-
-                    protractorImage.setVisibility(View.VISIBLE);
-                } else {
-
-                    protractorImage.setVisibility(View.INVISIBLE);
+                if(rotationCon==0){
+                    rotationCon=1;
+                }else{
+                    rotationCon=0;
                 }
             }
         });
 
 
+        protractor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (rotationcontroller.getVisibility() == View.INVISIBLE) {
+
+                    rotationcontroller.setVisibility(View.VISIBLE);
+                } else {
+
+                    rotationcontroller.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+
+
+        protractorImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                // method called more than once, but the values only need to be initialized one time
+                if (dialerHeight == 0 || dialerWidth == 0) {
+                    dialerHeight = protractorImage.getHeight();
+                    dialerWidth = protractorImage.getWidth();
+
+                    Log.e("ERROR-1",imageOriginal.getWidth()+" "+imageOriginal.getHeight());
+                    Log.e("ERROR0",dialerHeight+ " "+dialerHeight);
+                    Log.e("ERROR",((float) Math.min(dialerWidth, dialerHeight) / (float) imageOriginal.getWidth())+" "+ (float) Math.min(dialerWidth, dialerHeight) / (float) imageOriginal.getHeight());
+                    // resize
+                    Matrix resize = new Matrix();
+                    resize.postScale((float) Math.min(dialerWidth, dialerHeight) / (float) imageOriginal.getWidth(), (float) Math.min(dialerWidth, dialerHeight) / (float) imageOriginal.getHeight());
+                    imageScaled = Bitmap.createBitmap(imageOriginal, 0, 0, imageOriginal.getWidth(), imageOriginal.getHeight(), resize, false);
+
+
+                    protractorImage.setImageBitmap(imageScaled);
+                    protractorImage.setImageMatrix(matrix);
+                }
+            }
+        });
+
+
+
         protractorImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
+
+                ///Rotation
+
+                if(rotationCon==1){
+
+
+                    switch (event.getAction()) {
+
+                        case MotionEvent.ACTION_DOWN:
+                            startAngle = getAngle(event.getX(), event.getY());
+                            break;
+
+                        case MotionEvent.ACTION_MOVE:
+                            double currentAngle = getAngle(event.getX(), event.getY());
+                            rotateDialer((float) (startAngle - currentAngle));
+                            startAngle = currentAngle;
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+
+                            break;
+                    }
+                    return true;
+
+
+                }
+
+
+                ///////////////
+
+
+
+
                 final int X = (int) event.getRawX();
                 final int Y = (int) event.getRawY();
                 ImageView j = (ImageView) findViewById(R.id.protractorimage);
@@ -259,19 +378,41 @@ public class TakeThisExam extends Activity {
         highlight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Spannable spannable = new SpannableString(reference.getText().toString());
-                spannable.setSpan(new ForegroundColorSpan(Color.BLUE), reference.getSelectionStart(), reference.getSelectionEnd(), 0);
 
-                int record=position,temp=0;
+                int record=position,temp2=0;
                 SharedPreferences.Editor editor = highlightText.edit();
-               /* while(highlightText.getInt(record+temp+"start",-1)!=-1){
+
+                /*if(record!=0 && !questionArrayList.get(record).referencePar.equals(questionArrayList.get(record-1).referencePar)){
                     temp++;
+                }
+               while(highlightText.getInt(temp+"start"+temp2,-1)!=-1){
+                    temp2++;
                 }*/
-                Toast.makeText(getApplicationContext(),"Storing "+record,Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(getApplicationContext(),"Storing "+record,Toast.LENGTH_SHORT).show();
                 editor.putInt(record +  "start", reference.getSelectionStart());
                 editor.putInt(record +  "end", reference.getSelectionEnd());
-                editor.apply();
-                Toast.makeText(getApplicationContext(),"FROM "+ highlightText.getInt(record+temp+"start",10)+" TO "+highlightText.getInt(record+temp+"end",10),Toast.LENGTH_SHORT).show();
+                editor.apply();*/
+
+                //Toast.makeText(getApplicationContext(),"FROM "+ highlightText.getInt(record+temp+"start",10)+" TO "+highlightText.getInt(record+temp+"end",10),Toast.LENGTH_SHORT).show();
+                /*editor.putInt(temp+"start"+temp2,reference.getSelectionStart());
+                editor.putInt(temp+"end"+temp2,reference.getSelectionEnd());
+                editor.apply();*/
+
+
+                highlightTextArrayList.get(highlightTextArrayList.get(record).id).start.add(reference.getSelectionStart());
+                highlightTextArrayList.get(highlightTextArrayList.get(record).id).end.add(reference.getSelectionEnd());
+
+                Spannable spannable = new SpannableString(reference.getText().toString());
+                Log.e("10",highlightTextArrayList.get(highlightTextArrayList.get(record).id).start.toString());
+                Log.e("20", highlightTextArrayList.get(highlightTextArrayList.get(record).id).end.toString());
+                int it=0;
+                for(int start:highlightTextArrayList.get(highlightTextArrayList.get(record).id).start){
+                    try {
+                        spannable.setSpan(new ForegroundColorSpan(Color.BLUE), start, highlightTextArrayList.get(highlightTextArrayList.get(record).id).end.get(it), 0);
+                    }catch (Exception e){}
+                    it++;
+                }
+
                 reference.setText(spannable);
             }
         });
@@ -321,18 +462,35 @@ public class TakeThisExam extends Activity {
         option4.setChecked(false);
         options.clearCheck();
 
-        int record=position,temp=0;
-        if(highlightText.getInt(record+"start",-1)!=-1){
+        int record=position,temp2=0;
+      /*  if(highlightText.getInt(record+"start",-1)!=-1){
             Toast.makeText(getApplicationContext(),"Getting "+record+temp,Toast.LENGTH_SHORT).show();
             Spannable spannable = new SpannableString(reference.getText().toString());
             try {
-                spannable.setSpan(new ForegroundColorSpan(Color.BLUE), highlightText.getInt(record +  "start", 0), highlightText.getInt(record  + "end", 0), 0);
+                int it=0;
+                for(int start:highlightTextArrayList.get(highlightTextArrayList.get(position).id).start){
+                    spannable.setSpan(new ForegroundColorSpan(Color.BLUE), start, highlightTextArrayList.get(highlightTextArrayList.get(position).id).end.get(it), 0);
+                    it++;
+                }
 
             }catch (Exception en){}
-            Toast.makeText(getApplicationContext(),"FROM "+ highlightText.getInt(record+"start",0)+" TO "+highlightText.getInt(record+"end",0),Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),"FROM "+ highlightText.getInt(record+"start",0)+" TO "+highlightText.getInt(record+"end",0),Toast.LENGTH_SHORT).show();
             reference.setText(spannable);
             temp++;
+        }*/
+        Spannable spannable = new SpannableString(reference.getText().toString());
+        Log.e("21",highlightTextArrayList.get(highlightTextArrayList.get(record).id).start.toString());
+        Log.e("22",highlightTextArrayList.get(highlightTextArrayList.get(record).id).end.toString());
+        int it=0;
+
+        for(int start:highlightTextArrayList.get(highlightTextArrayList.get(record).id).start){
+            try {
+                spannable.setSpan(new ForegroundColorSpan(Color.BLUE), start, highlightTextArrayList.get(highlightTextArrayList.get(record).id).end.get(it), 0);
+            }catch (Exception e){}
+                it++;
         }
+
+        reference.setText(spannable);
 
         try{
             switch (Integer.parseInt(answers.get(position))){
@@ -354,6 +512,41 @@ public class TakeThisExam extends Activity {
         }catch (Exception en){}
 
     }
+
+
+
+    private double getAngle(double xTouch, double yTouch) {
+        double x = xTouch - (dialerWidth / 2d);
+        double y = dialerHeight - yTouch - (dialerHeight / 2d);
+
+        switch (getQuadrant(x, y)) {
+            case 1:
+                return Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
+            case 2:
+                return 180 - Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
+            case 3:
+                return 180 + (-1 * Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI);
+            case 4:
+                return 360 + Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
+            default:
+                return 0;
+        }
+    }
+
+    private static int getQuadrant(double x, double y) {
+        if (x >= 0) {
+            return y >= 0 ? 1 : 4;
+        } else {
+            return y >= 0 ? 2 : 3;
+        }
+    }
+
+    private void rotateDialer(float degrees) {
+        matrix.postRotate(degrees);
+
+        protractorImage.setImageMatrix(matrix);
+    }
+
 
     @Override
     public void onBackPressed(){
@@ -435,5 +628,71 @@ public class TakeThisExam extends Activity {
             }
         });
         dialog.show();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /////////////////////////////         TIMER                   ...////////////////////////////////////////////
+
+
+
+
+
+
+
+    public class MalibuCountDownTimer extends CountDownTimer
+    {
+
+        public MalibuCountDownTimer(long startTime, long interval)
+        {
+            super(startTime, interval);
+        }
+
+        @Override
+        public void onFinish()
+        {
+            sendAnswers();
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished)
+        {
+            updateTicker((millisUntilFinished / 1000));
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    public void sendAnswers(){
+        startActivity(new Intent(TakeThisExam.this,HomePageActivity.class));
+        finish();
+    }
+
+    public void updateTicker(long remaining){
+        Toast.makeText(getApplicationContext(),remaining+" ",Toast.LENGTH_SHORT).show();
     }
 }

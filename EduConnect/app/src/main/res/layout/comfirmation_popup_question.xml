@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:layout_marginBottom="15dp">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -24,6 +29,151 @@
             android:textColor="#000000"
             android:id="@+id/question"
             android:padding="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/match"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp">
+
+                <in.edconnect.TextView.CustomTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row11"
+                    android:layout_weight=".3"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row21"
+                    android:layout_weight=".3"
+                    android:layout_gravity="center"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#fafafa"
+                    android:layout_weight=".4"
+                    android:id="@+id/answer1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row12"
+                    android:layout_weight=".3"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row22"
+                    android:layout_weight=".3"
+                    android:layout_gravity="center"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#fafafa"
+                    android:layout_weight=".4"
+                    android:id="@+id/answer2"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row13"
+                    android:layout_weight=".3"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row23"
+                    android:layout_weight=".3"
+                    android:layout_gravity="center"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#fafafa"
+                    android:layout_weight=".4"
+                    android:id="@+id/answer3"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row14"
+                    android:layout_weight=".3"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row24"
+                    android:layout_weight=".3"
+                    android:layout_gravity="center"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#fafafa"
+                    android:layout_weight=".4"
+                    android:id="@+id/answer4"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row15"
+                    android:layout_weight=".3"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="row11"
+                    android:id="@+id/row25"
+                    android:layout_weight=".3"
+                    android:layout_gravity="center"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#fafafa"
+                    android:layout_weight=".4"
+                    android:id="@+id/answer5"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -81,5 +231,6 @@
 
 
     </LinearLayout>
+    </RelativeLayout>
 
 </ScrollView>
