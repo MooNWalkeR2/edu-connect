@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -37,7 +38,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout.LayoutParams;
 
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
@@ -55,7 +56,7 @@ import in.edconnect.TouchImageView.TouchImageView;
 /**
  * Created by admin on 7/19/2015.
  */
-public class TakeThisExam extends Activity {
+public class TakeThisExam extends Activity implements View.OnTouchListener {
 
     ArrayList<Question> questionArrayList;
     TextView question;
@@ -77,6 +78,8 @@ public class TakeThisExam extends Activity {
     int temp=0;
     ArrayList<HighlightText> highlightTextArrayList=new ArrayList<>();
     MalibuCountDownTimer countDownTimer ;
+    private int r=0;
+    ImageView mMainImg,mRotateImg;
 
     @Override
     public void onCreate(Bundle bundle){
@@ -99,8 +102,14 @@ public class TakeThisExam extends Activity {
         scale = (Button)findViewById(R.id.scale);
         protractorImage = (ImageView)findViewById(R.id.protractorimage);
         match = (LinearLayout)findViewById(R.id.match);
-        rotationcontroller = (LinearLayout)findViewById(R.id.protractorcontroller);
-        rotate = (Button)findViewById(R.id.rotate);
+
+        /////Rotation//
+
+        mMainImg = (ImageView) findViewById(R.id.protractorimage);
+        mRotateImg = (ImageView) findViewById(R.id.drager);
+        // mRotateImg.setOnTouchListener(this);
+        mMainImg.setOnTouchListener(this);
+        ///////////
 
 
 
@@ -255,7 +264,7 @@ public class TakeThisExam extends Activity {
             }
         });
 
-        rotate.setOnClickListener(new View.OnClickListener() {
+     /*   rotate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(rotationCon==0){
@@ -264,25 +273,25 @@ public class TakeThisExam extends Activity {
                     rotationCon=0;
                 }
             }
-        });
+        });*/
 
 
         protractor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (rotationcontroller.getVisibility() == View.INVISIBLE) {
+                if (protractorImage.getVisibility() == View.INVISIBLE) {
 
-                    rotationcontroller.setVisibility(View.VISIBLE);
+                    protractorImage.setVisibility(View.VISIBLE);
                 } else {
 
-                    rotationcontroller.setVisibility(View.INVISIBLE);
+                    protractorImage.setVisibility(View.INVISIBLE);
                 }
             }
         });
 
 
 
-        protractorImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+       /* protractorImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
@@ -304,11 +313,11 @@ public class TakeThisExam extends Activity {
                     protractorImage.setImageMatrix(matrix);
                 }
             }
-        });
+        });*/
 
 
 
-        protractorImage.setOnTouchListener(new View.OnTouchListener() {
+        /*protractorImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -370,7 +379,7 @@ public class TakeThisExam extends Activity {
 
                 return true;
             }
-        });
+        });*/
 
 
 
@@ -632,17 +641,6 @@ public class TakeThisExam extends Activity {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     /////////////////////////////         TIMER                   ...////////////////////////////////////////////
 
 
@@ -695,4 +693,77 @@ public class TakeThisExam extends Activity {
     public void updateTicker(long remaining){
         Toast.makeText(getApplicationContext(),remaining+" ",Toast.LENGTH_SHORT).show();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /////////////////////              Rotation            ///////////////////////
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int eId = event.getAction();
+        mRotateImg.setVisibility(ImageView.VISIBLE);
+        if (v == mMainImg) {
+            switch (eId) {
+                case MotionEvent.ACTION_MOVE:
+                    drag(v, event);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    mRotateImg.setOnTouchListener(this);
+                    break;
+                default:
+            }
+        }
+        if (v == mRotateImg) {
+            switch (eId) {
+                case MotionEvent.ACTION_MOVE:
+                    r = r + 2;
+                    rotate(v, event);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    mRotateImg.setVisibility(ImageView.INVISIBLE);
+                    break;
+                default:
+            }
+            if (v != mMainImg && v != mRotateImg)
+                mRotateImg.setVisibility(ImageView.INVISIBLE);
+        }
+        return true;
+    }
+
+    private void rotate(View v, MotionEvent event) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.drager);
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        Matrix matrix = new Matrix();
+        matrix.preRotate(-r);
+        Bitmap rotaBitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix,
+                true);
+        BitmapDrawable bdr = new BitmapDrawable(rotaBitmap);
+        mMainImg.setImageDrawable(bdr);
+    }
+
+    private void drag(View v, MotionEvent event) {
+        LayoutParams mParams = (LayoutParams) mMainImg.getLayoutParams();
+        int x = (int) event.getRawX();
+        int y = (int) event.getRawY();
+        mParams.leftMargin=x-150;
+        mParams.topMargin =y-210;
+        mMainImg.setLayoutParams(mParams);
+        mRotateImg.setLayoutParams(mParams);
+    }
+
 }

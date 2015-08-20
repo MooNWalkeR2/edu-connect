@@ -346,31 +346,28 @@
 
 </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:id="@+id/protractorcontroller"
-            android:orientation="vertical"
-            android:visibility="invisible">
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="210dp"
-            android:layout_height="120dp"
-            android:background="@drawable/protractor"
-            android:id="@+id/protractorimage"
-            android:scaleType="matrix"/>
 
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:text="rotation"
-                android:layout_marginTop="10dp"
-                android:id="@+id/rotate"
-                />
-        </LinearLayout>
+
+    <ImageView android:id="@+id/protractorimage"
+        android:layout_width="200sp"
+        android:layout_height="200sp"
+        android:src="@drawable/protractor"
+        android:layout_marginTop="50sp"
+        android:layout_marginLeft="50sp"
+         />
+    <ImageView android:id="@+id/drager"
+        android:layout_width="200sp"
+        android:layout_height="200sp"
+        android:src="@drawable/rotate"
+        android:visibility="invisible"
+        android:layout_marginTop="50sp"
+        android:layout_marginLeft="50sp" />
+
+</RelativeLayout>
 
     </RelativeLayout>
 

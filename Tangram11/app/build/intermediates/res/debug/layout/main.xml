@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="         Image Rotating "
+		android:id="@+id/xTv1" />
+	<ImageView android:id="@+id/xIvimg" android:layout_width="200sp"
+		android:layout_height="200sp" android:src="@drawable/icon"
+		android:layout_marginTop="50sp" android:layout_marginLeft="50sp"
+		android:layout_below="@+id/xTv1" />
+	<ImageView android:id="@+id/xIvRoller" android:layout_width="200sp"
+		android:layout_height="200sp" android:src="@drawable/rotate"
+		android:layout_below="@+id/xTv1" android:visibility="invisible"
+		android:layout_marginTop="50sp" android:layout_marginLeft="50sp" />
+</RelativeLayout>
+<!-- From: file:/E:/desktop/Educonnect/edu-connect/Tangram11/app/src/main/res/layout/main.xml -->
