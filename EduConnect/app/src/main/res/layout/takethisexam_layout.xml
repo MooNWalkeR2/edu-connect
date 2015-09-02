@@ -14,7 +14,98 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e0f2f1"
-    android:layout_marginTop="15dp">
+    android:layout_marginTop="15dp"
+    android:id="@+id/takethisexammain">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight=".5">
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#f2f2f2"
+                android:layout_margin="5dp"
+                android:text="Section 1"
+                android:gravity="center"
+                android:visibility="visible"
+                android:id="@+id/section1"/>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#f2f2f2"
+                android:layout_margin="5dp"
+                android:text="Section 2"
+                android:gravity="center"
+                android:id="@+id/section2"/>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#f2f2f2"
+                android:layout_margin="5dp"
+                android:text="Section 3"
+                android:gravity="center"
+                android:id="@+id/section3"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight=".5"
+            android:layout_margin="5dp">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#f2f2f2"
+                android:layout_margin="5dp"
+                android:text="Section 1"
+                android:gravity="center"
+                android:id="@+id/section4"/>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#f2f2f2"
+                android:layout_margin="5dp"
+                android:text="Section 2"
+                android:gravity="center"
+                android:id="@+id/section5"/>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="#f2f2f2"
+                android:layout_margin="5dp"
+                android:text="Section 3"
+                android:gravity="center"
+                android:id="@+id/section6"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 
@@ -218,7 +309,8 @@
             android:layout_gravity="left"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
-            android:id="@+id/option2"/>
+            android:id="@+id/option2"
+            />
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -285,7 +377,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
         android:layout_marginTop="25dp"
         android:orientation="vertical">
 
@@ -336,6 +428,22 @@
             android:id="@+id/scale"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight=".5"
+            >
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2.5dp"
+                android:background="#b2dfdb"
+                android:text="Answer Stats"
+                android:id="@+id/answerstatsbutton"/>
+
+            </LinearLayout>
 
 
     </LinearLayout>
@@ -368,6 +476,8 @@
         android:layout_marginLeft="50sp" />
 
 </RelativeLayout>
+
+
 
     </RelativeLayout>
 

@@ -14,8 +14,10 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.Spannable;
@@ -42,11 +44,17 @@ import android.widget.RelativeLayout.LayoutParams;
 
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import in.edconnect.Database.QuestionDBHelper;
 import in.edconnect.HomePageActivity;
 import in.edconnect.R;
 import in.edconnect.SelectableTextView.SelectableTextView;
@@ -62,10 +70,10 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     TextView question;
     TextView reference;
     RadioButton option1,option2,option3,option4;
-    Button previous,skip,submit,calculator,protractor,highlight,scale,rotate;
+    Button previous,skip,submit,calculator,protractor,highlight,scale,rotate,answerstats;
     RadioGroup options;
     private int position;
-    ArrayList<String> answers;
+    ArrayList<Answers > answers;
     ImageView protractorImage;
     int _xDelta,_yDelta;
     SharedPreferences highlightText;
@@ -80,6 +88,9 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     MalibuCountDownTimer countDownTimer ;
     private int r=0;
     ImageView mMainImg,mRotateImg;
+    EditText match1,match2,match3,match4,match5;
+    Button section1,section2,section3,section4,section5,section6;
+    QuestionDBHelper dbHelper;
 
     @Override
     public void onCreate(Bundle bundle){
@@ -102,8 +113,123 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         scale = (Button)findViewById(R.id.scale);
         protractorImage = (ImageView)findViewById(R.id.protractorimage);
         match = (LinearLayout)findViewById(R.id.match);
+        match1=(EditText)findViewById(R.id.answer1);
+        match2=(EditText)findViewById(R.id.answer2);
+        match3=(EditText)findViewById(R.id.answer3);
+        match4=(EditText)findViewById(R.id.answer4);
+        match5=(EditText)findViewById(R.id.answer5);
 
-        /////Rotation//
+
+
+
+
+        //////////////////////// Answer stats /////////////////
+
+
+        answerstats = (Button)findViewById(R.id.answerstatsbutton);
+        answerstats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /////// Send arraylist of answer and and also the section id //////////////
+                Intent intent = new Intent();
+                intent.putParcelableArrayListExtra("list",answers);
+                intent.setClass(TakeThisExam.this,AnswerStats.class);
+                startActivity(intent);   //// Check if the data of variable is preserved or not
+            }
+        });
+
+        /////////////////////////////////////////////////////////
+
+        //////////////////////// Section ///////////////////////
+
+        section1 = (Button)findViewById(R.id.section1);
+        section2 = (Button)findViewById(R.id.section2);
+        section3 = (Button)findViewById(R.id.section3);
+        section4 = (Button)findViewById(R.id.section4);
+        section5 = (Button)findViewById(R.id.section5);
+        section6 = (Button)findViewById(R.id.section6);
+
+        dbHelper = new QuestionDBHelper(this);
+
+        SectionClick sectionClick =  new SectionClick();
+        section1.setOnClickListener(sectionClick);
+        section2.setOnClickListener(sectionClick);
+        section3.setOnClickListener(sectionClick);
+        section4.setOnClickListener(sectionClick);
+        section5.setOnClickListener(sectionClick);
+        section6.setOnClickListener(sectionClick);
+
+        section1.setVisibility(View.INVISIBLE);
+        section2.setVisibility(View.INVISIBLE);
+        section3.setVisibility(View.INVISIBLE);
+        section4.setVisibility(View.INVISIBLE);
+        section5.setVisibility(View.INVISIBLE);
+        section6.setVisibility(View.INVISIBLE);
+
+
+        int secCount = 0;
+        for(Sections section:dbHelper.getThisSections()){
+            switch (secCount){
+                case 0:
+                    section1.setText(section.sectionname);
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+                case 1:
+                    section2.setText(section.sectionname);
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+
+                case 3:
+                    section3.setText(section.sectionname);
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+
+                case 4:
+                    section4.setText(section.sectionname);
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+
+                case 5:
+                    section5.setText(section.sectionname);
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+
+                case 6:
+                    section6.setText(section.sectionname);
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+            }
+
+        }
+
+        SharedPreferences shareSections = getSharedPreferences("Sections",MODE_PRIVATE);
+        SharedPreferences.Editor editor = shareSections.edit();
+        editor.putString("section1","false");
+        editor.putString("section2","false");
+        editor.putString("section3","false");
+        editor.putString("section4","false");
+        editor.putString("section5","false");
+        editor.putString("section6","false");
+        editor.apply();
+
+
+        ///////////////////////////////////////////////////////
+
+
+
+        /////////////////////Rotation//////////////////////////////////////
 
         mMainImg = (ImageView) findViewById(R.id.protractorimage);
         mRotateImg = (ImageView) findViewById(R.id.drager);
@@ -132,7 +258,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         Typeface faceGautami = Typeface.createFromAsset(getAssets(),
                 "gautami.ttf");
         question.setTypeface(faceGautami);
-        question.setText("2. ??????????");
+        question.setText("M\'2. ??????????'");
 
         questionArrayList = new ArrayList<>();
         answers = new ArrayList<>();
@@ -143,9 +269,10 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         //in that while loop check if the question is match the following or not if it is then set it
         try{
 
+            saveThisQuestionPaper();
 
             //if reference bar is not empty and if it is not already added then add it to array list
-            questionArrayList.add(new Question(1,0,"What is the capital of India?","Gujarat","Delhi","UP","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
+            questionArrayList.add(new Question(1,0,Html.fromHtml("M\'1. ?????????? ??????? ??????? ???????? ????'").toString(),"Gujarat","Delhi","UP","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
             highlightTextArrayList.add(new HighlightText(0));
             questionArrayList.add(new Question(2,0,"The Centre for Cellular and Molecular Biology is situated at?","Patna","Jaipur","Jammu Kashmir","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
             highlightTextArrayList.add(new HighlightText(0));
@@ -169,7 +296,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
         //////////  assign time taken from web services
 
-        countDownTimer= new MalibuCountDownTimer(100000,1000);
+        countDownTimer= new MalibuCountDownTimer(100000,25000);
         countDownTimer.start();
 
 
@@ -183,31 +310,44 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
                     if(option1.getId()==(options.getCheckedRadioButtonId())){
-                        answers.add(position, "1");
+                        answers.add(position, new Answers("1"));
 
                     }else if(option2.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add(position, "2");
+                        answers.add(position, new Answers("2"));
 
                     }else if(option3.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add(position, "3");
+                        answers.add(position, new Answers("3"));
 
                     }else if(option4.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add(position, "4");
+                        answers.add(position, new Answers("4"));
 
                     }
+                    Log.e(position+"Answers: ",answers.toString());
 
 
                     if(position+1<questionArrayList.size()){
                         position++;
                         changeQuestion(position);
                     }else if(position+1 == questionArrayList.size()){
-
-
                           showMeTheDialog();
-
                     }
                 }else{
-                    Toast.makeText(getApplicationContext(), "Please Select One Option!", Toast.LENGTH_SHORT).show();
+                    if(questionArrayList.get(position).matchFollowing==1){
+                        Log.e("MAnswers: "," 1:" + match1.getText()+" 2:"+match2.getText()+" 3:"+match3.getText()+" 4:"+match4.getText()+" 5:"+match5.getText());
+                        answers.add(position, new Answers("1995"));
+                        answers.get(position).setMatch(match1.getText().toString(),match2.getText().toString(),match3.getText().toString(),match4.getText().toString(),match5.getText().toString());
+                        if(position+1<questionArrayList.size()){
+                            position++;
+                            changeQuestion(position);
+                        }else if(position+1 == questionArrayList.size()){
+
+
+
+                            showMeTheDialog();
+                        }
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Please Select One Option!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -218,14 +358,14 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                answers.add(position, "0");
+                answers.add(position, new Answers("0"));
                 if (position + 1 < questionArrayList.size()) {
                     position++;
                     changeQuestion(position);
                 }else{
                     int check=0;
-                    for(String ans:answers){
-                        if(ans.equals("0")){
+                    for(Answers ans:answers){
+                        if(ans.ans.equals("0")){
 
                         }else{
                             check=1;
@@ -285,6 +425,11 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 } else {
 
                     protractorImage.setVisibility(View.INVISIBLE);
+                    try{
+                        mRotateImg.setVisibility(View.INVISIBLE);
+                    }catch(Exception en){
+
+                    }
                 }
             }
         });
@@ -458,11 +603,39 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
         try {
 
-            question.setText(questionCurrent.question);
-            option1.setText(questionCurrent.option1);
-            option2.setText(questionCurrent.option2);
-            option3.setText(questionCurrent.option3);
-            option4.setText(questionCurrent.option4);
+
+            if(checkForLink(questionCurrent.question)){
+                Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.question));
+                question.setBackground(d);
+            }else {
+                question.setText(questionCurrent.question);
+            }
+            if(checkForLink(questionCurrent.option1)){
+                Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option1));
+                option1.setBackground(d);
+            }else {
+                option1.setText(questionCurrent.option1);
+            }
+            if(checkForLink(questionCurrent.option2)){
+                Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option2));
+                option2.setBackground(d);
+            }else {
+                option2.setText(questionCurrent.option2);
+            }
+            if(checkForLink(questionCurrent.option3)){
+                Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option3));
+                option3.setBackground(d);
+            }else {
+                option3.setText(questionCurrent.option3);
+            }
+            if(checkForLink(questionCurrent.option4)){
+                Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option4));
+                option4.setBackground(d);
+            }else {
+                option4.setText(questionCurrent.option4);
+            }
+
+
             reference.setText(questionCurrent.referencePar);
         }catch (Exception en){}
         option1.setChecked(false);
@@ -502,7 +675,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         reference.setText(spannable);
 
         try{
-            switch (Integer.parseInt(answers.get(position))){
+            switch (Integer.parseInt(answers.get(position).ans)){
                 case 1:
                     option1.setChecked(true);
                     break;
@@ -524,36 +697,24 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
 
-    private double getAngle(double xTouch, double yTouch) {
-        double x = xTouch - (dialerWidth / 2d);
-        double y = dialerHeight - yTouch - (dialerHeight / 2d);
+    private boolean checkForLink(String link){
 
-        switch (getQuadrant(x, y)) {
-            case 1:
-                return Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
-            case 2:
-                return 180 - Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
-            case 3:
-                return 180 + (-1 * Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI);
-            case 4:
-                return 360 + Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
-            default:
-                return 0;
+        if(link.contains("http://") || link.contains("https://")){
+            return true;
         }
+        return false;
     }
 
-    private static int getQuadrant(double x, double y) {
-        if (x >= 0) {
-            return y >= 0 ? 1 : 4;
-        } else {
-            return y >= 0 ? 2 : 3;
+    private Bitmap decodeThisUrl(String link){
+        URL url=null;
+        Bitmap bitmap=null;
+        try {
+            url = new URL(link);
+            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        }catch (Exception en) {
+            Log.e("Malformed", "URL EXCEPTION");
         }
-    }
-
-    private void rotateDialer(float degrees) {
-        matrix.postRotate(degrees);
-
-        protractorImage.setImageMatrix(matrix);
+        return bitmap;
     }
 
 
@@ -632,6 +793,12 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             @Override
             public void onClick(View view) {
                 highlightText.edit().clear().commit();
+
+                //// Get the current section id stored in every questions ///////////
+                //// And update it's sharedprefereces to true //////////////////////
+                //// Check if every shared preferences is true then ////////////////
+                //// Start Activity otherwise getSecQuestionAndRefresh /////////////
+
                 startActivity(new Intent(TakeThisExam.this, HomePageActivity.class));
                 finish();
             }
@@ -666,7 +833,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         @Override
         public void onTick(long millisUntilFinished)
         {
-            updateTicker((millisUntilFinished / 1000));
+            updateTicker((millisUntilFinished));
         }
     }
 
@@ -691,7 +858,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     }
 
     public void updateTicker(long remaining){
-        Toast.makeText(getApplicationContext(),remaining+" ",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),remaining/1000+" ",Toast.LENGTH_SHORT).show();
     }
 
 
@@ -745,7 +912,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
     private void rotate(View v, MotionEvent event) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.drager);
+                R.drawable.protractor);
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
         Matrix matrix = new Matrix();
@@ -765,5 +932,946 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         mMainImg.setLayoutParams(mParams);
         mRotateImg.setLayoutParams(mParams);
     }
+
+
+
+
+
+    /////////////////////////////////////////////////////////////Save this question paper//////////////////////////////
+
+
+
+    public void saveThisQuestionPaper(){
+        ///// Send volley request and call savethisquestionpaperafterresponse after response
+        saveThisQuestionPaperAfterResponse("response in string format");
+    }
+
+
+    public void saveThisQuestionPaperAfterResponse(String response){
+
+        JSONObject questionPaper=null;
+        JSONObject QuestionPaper=null;
+
+        response = "{\n" +
+                "  \"ExamQuestionPaper\": {\n" +
+                "    \"ExamName\": \"Telangana General Knowledge\",\n" +
+                "    \"ExamId\": \"000001\",\n" +
+                "    \"MaximumMarks\": \"10\",\n" +
+                "    \"StartDate\": \"8/18/2015\",\n" +
+                "    \"EndDate\": \"8/18/2015\",\n" +
+                "    \"StartTime\": \"15-00\",\n" +
+                "    \"ExamDuration\": \"00-30\",\n" +
+                "    \"Instructions\": \"some sequence of instructions\",\n" +
+                "    \"StudentImage\": \"preet.jpg\",\n" +
+                "    \"Sections\": {\n" +
+                "      \"Section\": [\n" +
+                "        {\n" +
+                "          \"-id\": \"1\",\n" +
+                "          \"-Name\": \"About Telangana\",\n" +
+                "          \"SectionQuestions\": {\n" +
+                "            \"Question\": [\n" +
+                "              {\n" +
+                "                \"-id\": \"1\",\n" +
+                "                \"-CorrectAnswer\": \"3\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": \"Which state is formed recently\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"Chattishghar\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"Jharkhand\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"Telangana\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"Uttarakhand\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": \"?????????? ??????? ??????? ???????? ????\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"??????? ???\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"???????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"??????????\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"-id\": \"2\",\n" +
+                "                \"-CorrectAnswer\": \"2\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": \"Telangana formation day?\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"June 1, 2014\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"June 2, 2014\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"June 3, 2014\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"June 4, 2014\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": \"??????? ???????????? ????????? ????????\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"???? 1, 2014\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"???? 2, 2014\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"???? 3, 2014\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"???? 4, 2014\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"-id\": \"3\",\n" +
+                "                \"-CorrectAnswer\": \"1\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": \"Telangana captital\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"Hyderabad\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"Bangalore\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"Vijayawada\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"Chennai\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": \"??????? ??????? ????\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"?????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"?????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"???????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"??????\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"-id\": \"4\",\n" +
+                "                \"-CorrectAnswer\": \"2\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": \"Telangana first chief minister?\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"Devendra Fadnavis\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"Chandra Sekhar Rao\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"Sivaraj Chowhan\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"Raman Singh\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": \"??????? ??????? ????? ??????????? ?????\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"???????? ????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"??.????????? ????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"??????? ??????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"???? ?????\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"-id\": \"5\",\n" +
+                "                \"-CorrectAnswer\": \"2\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": \"Which is border state of Telangana?\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"Bihar\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"Maharastra\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"Kerala\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"Tamilnadu\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": \"? ??????? ?????? ??? ??????? ???????? ??????????? ?????\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"??????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"??????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"????????\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              }\n" +
+                "            ]\n" +
+                "          }\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"-id\": \"2\",\n" +
+                "          \"-Name\": \"About Telugu\",\n" +
+                "          \"SectionQuestions\": {\n" +
+                "            \"Question\": [\n" +
+                "              {\n" +
+                "                \"-id\": \"6\",\n" +
+                "                \"-CorrectAnswer\": \"2\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-PassageNo\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": \"How is Helen?\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"cruel\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"good\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"innocent\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"mad\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": \"?????? ??????????\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"?????? ??????? ????? ????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"??????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"??????????? ??????\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"-id\": \"7\",\n" +
+                "                \"-CorrectAnswer\": \"1\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-PassageNo\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": \"Helen helped whom?\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"poor\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"patients\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"disabled\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"unemployed\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": \"?????? ???????????? ????????? ??? ???????????????? ?????????\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"?????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"??????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"??????????????? ??????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"????????? ??????????\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"-id\": \"8\",\n" +
+                "                \"-CorrectAnswer\": \"2\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-PassageNo\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": \"Helen visiting following countries...\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"Italy, Russia, France\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"England, Africa, America\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"Japan, Koria, China\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"Australia, Nuzeland, Malaysia\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": \"?????? ? ? ?????? ?????????????\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"????, ?????,????????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"?????????, ???????, ???????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"?????, ??????, ????\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"???????????, ???????????, ???????\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"-id\": \"9\",\n" +
+                "                \"-CorrectAnswer\": \"3\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": { \"p\": \"Which triangle is right angle triangle?\" },\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"p\": {\n" +
+                "                            \"-align\": \"center\",\n" +
+                "                            \"-style\": \"text-align:center\",\n" +
+                "                            \"span\": {\n" +
+                "                              \"-style\": \"font-size:10.0pt\",\n" +
+                "                              \"img\": {\n" +
+                "                                \"-width\": \"143\",\n" +
+                "                                \"-height\": \"136\",\n" +
+                "                                \"-src\": \"1.gif\",\n" +
+                "                                \"-style\": \"vertical-align: middle\"\n" +
+                "                              }\n" +
+                "                            }\n" +
+                "                          }\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"p\": {\n" +
+                "                            \"-align\": \"center\",\n" +
+                "                            \"-style\": \"text-align:center\",\n" +
+                "                            \"span\": {\n" +
+                "                              \"-style\": \"font-size:10.0pt\",\n" +
+                "                              \"img\": {\n" +
+                "                                \"-width\": \"143\",\n" +
+                "                                \"-height\": \"136\",\n" +
+                "                                \"-src\": \"2.gif\",\n" +
+                "                                \"-style\": \"vertical-align: middle\"\n" +
+                "                              }\n" +
+                "                            }\n" +
+                "                          }\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"p\": {\n" +
+                "                            \"-align\": \"center\",\n" +
+                "                            \"-style\": \"text-align:center\",\n" +
+                "                            \"span\": {\n" +
+                "                              \"-style\": \"font-size:10.0pt\",\n" +
+                "                              \"img\": {\n" +
+                "                                \"-width\": \"143\",\n" +
+                "                                \"-height\": \"136\",\n" +
+                "                                \"-src\": \"3.gif\",\n" +
+                "                                \"-style\": \"vertical-align: middle\"\n" +
+                "                              }\n" +
+                "                            }\n" +
+                "                          }\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"p\": {\n" +
+                "                            \"-align\": \"center\",\n" +
+                "                            \"-style\": \"text-align:center\",\n" +
+                "                            \"span\": {\n" +
+                "                              \"-style\": \"font-size:10.0pt\",\n" +
+                "                              \"img\": {\n" +
+                "                                \"-width\": \"143\",\n" +
+                "                                \"-height\": \"136\",\n" +
+                "                                \"-src\": \"4.gif\",\n" +
+                "                                \"-style\": \"vertical-align: middle\"\n" +
+                "                              }\n" +
+                "                            }\n" +
+                "                          }\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        { \"-id\": \"1\" },\n" +
+                "                        { \"-id\": \"2\" },\n" +
+                "                        { \"-id\": \"3\" },\n" +
+                "                        { \"-id\": \"4\" }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              },\n" +
+                "              {\n" +
+                "                \"-id\": \"10\",\n" +
+                "                \"-CorrectAnswer\": \"3\",\n" +
+                "                \"-QuestionMarks\": \"1\",\n" +
+                "                \"-Type\": \"MCQ\",\n" +
+                "                \"Laungage\": [\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"English\",\n" +
+                "                    \"QuestionText\": {\n" +
+                "                      \"p\": [\n" +
+                "                        \"Which pair of the following figures appears to be congruent (same size, same shape)?\",\n" +
+                "                        {\n" +
+                "                          \"-align\": \"center\",\n" +
+                "                          \"-style\": \"text-align:center\",\n" +
+                "                          \"span\": {\n" +
+                "                            \"-style\": \"font-size:10.0pt\",\n" +
+                "                            \"img\": {\n" +
+                "                              \"-width\": \"143\",\n" +
+                "                              \"-height\": \"136\",\n" +
+                "                              \"-src\": \"5.gif\",\n" +
+                "                              \"-style\": \"vertical-align: middle\"\n" +
+                "                            }\n" +
+                "                          }\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    },\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"aaaa\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"bbbb\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"cccc\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"dddd\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  },\n" +
+                "                  {\n" +
+                "                    \"-Name\": \"Telugu\",\n" +
+                "                    \"QuestionText\": {\n" +
+                "                      \"p\": [\n" +
+                "                        \"Which pair of the following figures appears to be congruent (same size, same shape)?\",\n" +
+                "                        {\n" +
+                "                          \"-align\": \"center\",\n" +
+                "                          \"-style\": \"text-align:center\",\n" +
+                "                          \"span\": {\n" +
+                "                            \"-style\": \"font-size:10.0pt\",\n" +
+                "                            \"img\": {\n" +
+                "                              \"-width\": \"143\",\n" +
+                "                              \"-height\": \"136\",\n" +
+                "                              \"-src\": \"5.gif\",\n" +
+                "                              \"-style\": \"vertical-align: middle\"\n" +
+                "                            }\n" +
+                "                          }\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    },\n" +
+                "                    \"Options\": {\n" +
+                "                      \"Option\": [\n" +
+                "                        {\n" +
+                "                          \"-id\": \"1\",\n" +
+                "                          \"#text\": \"aaaa\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"2\",\n" +
+                "                          \"#text\": \"bbbb\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"3\",\n" +
+                "                          \"#text\": \"cccc\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                          \"-id\": \"4\",\n" +
+                "                          \"#text\": \"dddd\"\n" +
+                "                        }\n" +
+                "                      ]\n" +
+                "                    }\n" +
+                "                  }\n" +
+                "                ]\n" +
+                "              }\n" +
+                "            ]\n" +
+                "          }\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    \"Images\": {\n" +
+                "      \"Image\": [\n" +
+                "        {\n" +
+                "          \"-id\": \"1\",\n" +
+                "          \"-Type\": \"Image\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"-id\": \"2\",\n" +
+                "          \"-Type\": \"Image\"\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    \"Passages\": {\n" +
+                "      \"Passage\": {\n" +
+                "        \"-id\": \"1\",\n" +
+                "        \"Laungage\": [\n" +
+                "          {\n" +
+                "            \"-Name\": \"English\",\n" +
+                "            \"PassageText\": \"\n" +
+                "            Helen is a good girl. She feels pity by seeing poor. She loves nature. She worked for poor people. She visited England, America, Africa and then India.\n" +
+                "            \"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"-Name\": \"Telugu\",\n" +
+                "            \"PassageText\": \"\n" +
+                "            ?????? ????? ?????? ??????????.???????, ?????????? ??????????? ??? ???? ???????????.???????? ????? ????? ????? ?????????????.  ?????? ???????? ????? ????? ???? ??? ???????? ????????? ????????\n" +
+                "            ???????. ????? ???????? ??? ?????? ??????? ?????, ?? ??????? ????????? ???????????. ??????? ????? ????????? ???????? ?????????? ?????????? ?????? ????? ????? ??????????? ?????? ????? ??. ?????????? ??????,\n" +
+                "            '??????????????? ???? ???????? ????? ??????? ???????????????? ????????.? ????????? ?????????, ???????, ?????? ?????? ?????????? ??????????? ???? ????????. ??? ??????, ???????? ??????? ????????????????.\n" +
+                "            \"\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        try {
+            questionPaper = new JSONObject(response);
+            QuestionPaper = questionPaper.getJSONObject("ExamQuestionPaper");
+        }catch (JSONException e){
+            Log.e("Parsing",e.toString());
+        }
+
+
+        try{
+            String examName = QuestionPaper.getString("ExamName");
+            Log.e("ExamName",examName);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+        try{
+            String examID = QuestionPaper.getString("ExamId");
+            Log.e("ExamId",examID);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+        try{
+            String maximumMarks = QuestionPaper.getString("MaximumMarks");
+            Log.e("Max Marks",maximumMarks);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+
+        try{
+            String startDate =  QuestionPaper.getString("StartDate");
+            Log.e("Start Date",startDate);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+        try{
+            String endDate = QuestionPaper.getString("EndDate");
+            Log.e("End Date",endDate);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+
+        try{
+            String startTime = QuestionPaper.getString("StartTime");
+            Log.e("Start Time ",startTime);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+        try{
+            String examDuration = QuestionPaper.getString("ExamDuration");
+            Log.e("Duration",examDuration);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+
+        try{
+            String instruction = QuestionPaper.getString("Instructions");
+            Log.e("Instruction",instruction);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+        try{
+            String studentImageURL = QuestionPaper.getString("StudentImage");
+            Log.e("Student URL",studentImageURL);
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+        try{
+            JSONObject sections = QuestionPaper.getJSONObject("Sections");
+            JSONArray Section = sections.getJSONArray("Section");
+            for(int i=0;i<Section.length();i++){
+
+                JSONObject section = Section.getJSONObject(i);
+                String secId="",secName="";
+                try {
+                     secId = section.getString("-id");
+                }catch (JSONException en){
+                    Log.e("Error at ",en.toString());
+                }
+                try{
+                     secName = section.getString("-Name");
+                }catch (JSONException en){
+                    Log.e("Error at ",en.toString());
+                }
+                Log.e("Name:",secName);
+
+                JSONObject sectionQuestions = section.getJSONObject("SectionQuestions");
+                JSONArray Questions = sectionQuestions.getJSONArray("Question");
+
+                //Loop for each question
+                for(int j=0;j<Questions.length();j++){
+
+                    ////////////// Create your database from here (id + language = primery key) ///////////////
+                    JSONArray questionLanguages=null;
+                    try {
+                        JSONObject question = Questions.getJSONObject(j);
+                        String questionId = question.getString("-id");
+                        String questionCorrectAnswer = question.getString("-CorrectAnswer");
+                        String questionMarks = question.getString("-QuestionMarks");
+                        String questionType = question.getString("-Type");
+                        Log.e("InfoQuestion", questionId + " " + questionCorrectAnswer + " " + questionMarks + " " + questionType);
+
+                        questionLanguages = question.getJSONArray("Laungage");
+                    }catch (JSONException en){
+                        Log.e("Error At",en.toString());
+                    }
+
+                    for(int k=0;k<questionLanguages.length();k++){
+                        JSONObject questionLanguage=null;
+                        try {
+                            questionLanguage = questionLanguages.getJSONObject(k);
+                            String languageName = questionLanguage.getString("-Name");
+                            String languageQuetionText = questionLanguage.getString("QuestionText");
+                            Log.e("Language", languageName + " " + languageQuetionText);
+                        }catch (JSONException en){
+                            Log.e("Error at ",en.toString());
+                        }
+
+                        try {
+
+                            JSONObject options = questionLanguage.getJSONObject("Options");
+                            JSONArray option = options.getJSONArray("Option");
+
+                            for (int l = 0; l < option.length(); l++) {
+                                String optionText = "", optionId = "";
+                                JSONObject Option = option.getJSONObject(l);
+                                try {
+                                    optionId = Option.getString("-id");
+                                } catch (JSONException e) {
+                                    Log.e("Error At", e.toString());
+                                }
+                                try {
+                                    optionText = Option.getString("#text");
+                                } catch (JSONException e) {
+                                    Log.e("Error At", e.toString());
+                                }
+                                Log.e("Option" + l, optionId + " " + optionText);
+                            }
+                        }catch (JSONException en){
+                            Log.e("Error At",en.toString());
+                        }
+
+                    }
+                }
+            }
+        }catch(JSONException en){
+            Log.e("SaveThisQuestion",en.toString());
+        }
+
+
+    }
+
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    //////////////////////////////////////////// Section ////////////////////////////////////////////////////////
+
+
+
+
+    private class SectionClick implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+
+            switch (view.getId()){
+
+                case R.id.section1:
+                    getSecQuestionAndRefresh(1);
+                    break;
+
+                case R.id.section2:
+                    getSecQuestionAndRefresh(2);
+                    break;
+
+                case R.id.section3:
+                    getSecQuestionAndRefresh(3);
+                    break;
+
+                case R.id.section4:
+                    getSecQuestionAndRefresh(4);
+                    break;
+
+                case R.id.section5:
+                    getSecQuestionAndRefresh(5);
+                    break;
+
+                case R.id.section6:
+                    getSecQuestionAndRefresh(6);
+                    break;
+            }
+        }
+    }
+
+
+    public void getSecQuestionAndRefresh(int sectionid){
+
+        questionArrayList = dbHelper.getThisSectionQuestions(sectionid);
+        position=0;
+        changeQuestion(position);
+
+    }
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 }

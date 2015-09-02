@@ -37,6 +37,10 @@
             android:label="TakeThisExam" >
         </activity>
 
+        <activity
+            android:name=".TakeThisExam.AnswerStats"
+            android:label="TakeThisExam" >
+        </activity>
     </application>
 
 </manifest>

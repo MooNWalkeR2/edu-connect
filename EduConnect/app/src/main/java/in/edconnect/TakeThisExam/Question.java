@@ -7,12 +7,15 @@ public class Question {
 
 
     int num;
-    String question,option1,option2,option3,option4;
+    String question,option1,option2,option3,option4,language,id;
+    int correctAnswer,questionMarks,sectionid;
+    String sectionname;
     String referencePar;
-    byte[] ques;
     int matchFollowing;
     String row11,row12,row13,row14,row15,row21,row22,row23,row24,row25;
     int groupID;
+
+    public Question(){}
 
     public  Question(int num,int groupID,String question,String option1,String option2,String option3,String option4,String referencePar,int matchFollowing){
         this.question = question;
@@ -22,9 +25,7 @@ public class Question {
         this.option4 = option4;
         this.referencePar=referencePar;
         this.matchFollowing=matchFollowing;
-        try {
-            ques = "?????????? ??????? ??????? ???????? ????".getBytes("UTF-16LE");
-        }catch (Exception en){}
+
         this.groupID=groupID;
 
     }

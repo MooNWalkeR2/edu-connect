@@ -24,11 +24,11 @@ import in.edconnect.TextView.CustomTextView;
 public class MySimpleArrayAdapter extends BaseAdapter {
     private final Context context;
     private final ArrayList<Question> values;
-    private final ArrayList<String> answers;
+    private final ArrayList<Answers> answers;
     LinearLayout match;
     RadioGroup options;
 
-    public MySimpleArrayAdapter(Context context, ArrayList<Question> values,ArrayList<String> answers) {
+    public MySimpleArrayAdapter(Context context, ArrayList<Question> values,ArrayList<Answers> answers) {
         this.context = context;
         this.values = values;
         this.answers = answers;
@@ -108,6 +108,12 @@ public class MySimpleArrayAdapter extends BaseAdapter {
             answer4=(EditText)rowView.findViewById(R.id.answer4);
             answer5=(EditText)rowView.findViewById(R.id.answer5);
 
+            answer1.setText(answers.get(position).match1);
+            answer2.setText(answers.get(position).match2);
+            answer3.setText(answers.get(position).match3);
+            answer4.setText(answers.get(position).match4);
+            answer5.setText(answers.get(position).match5);
+
             answer1.setEnabled(false);
             answer2.setEnabled(false);
             answer3.setEnabled(false);
@@ -134,7 +140,7 @@ public class MySimpleArrayAdapter extends BaseAdapter {
         try {
 
 
-            switch (Integer.parseInt(answers.get(position))) {
+            switch (Integer.parseInt(answers.get(position).ans)) {
                 case 0:
                     break;
                 case 1:
