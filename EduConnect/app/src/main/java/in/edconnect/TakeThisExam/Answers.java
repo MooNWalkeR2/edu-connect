@@ -8,12 +8,19 @@ import android.os.Parcelable;
  */
 public class Answers  implements Parcelable{
 
-    int questionid;
+    int position;
+    int sectionId;
     String ans;
     String match1="0",match2="0",match3="0",match4="0",match5="0";
 
     public Answers(String ans){
         this.ans=ans;
+    }
+
+    public Answers(String ans,int sectionId,int position){
+        this.ans=ans;
+        this.sectionId=sectionId;
+        this.position=position;
     }
 
     public void setAns(String ans){

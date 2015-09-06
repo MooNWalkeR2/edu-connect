@@ -41,7 +41,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table questions uid integer primery key , id integer , sectionid integer , sectionname text , correctanswer integer , questionmarks integer ,type text , languagename text , languagetext text , option1 text , option2 text ,option3 text , option4 text ");
+        db.execSQL("create table questions (uid integer primary key , id text , sectionid text , sectionname text , correctanswer text , questionmarks text ,type text , languagename text , languagetext text , option1 text , option2 text ,option3 text , option4 text) ");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertQuestion(int id ,int sectionid , String sectionname, int correctAnswer , int questionMarks ,String type , String languageName , String languageText,String option1,String option2,String option3,String option4){
+    public boolean insertQuestion(String id ,String sectionid , String sectionname,String correctAnswer , String questionMarks ,String type , String languageName , String languageText,String option1,String option2,String option3,String option4){
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -69,6 +69,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
             cv.put(OPTION_THREE,option3);
             cv.put(OPTION_FOUR,option4);
             db.insert(TABLE_NAME,null,cv);
+            Log.e("INSERTED:","INTO DATABASE");
         }catch(Exception en){
             Log.e("ERROR", en.toString());
             return false;
@@ -78,7 +79,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
     }
 
 
-    public Question getThisQuestion(int id, String languageName){
+    public Question getThisQuestion(String secid,String id , String languageName){
         Question question = new Question();
         SQLiteDatabase db = this.getReadableDatabase();
         try {
@@ -93,11 +94,16 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<String> getThisLanguages(int id){
+    public ArrayList<String> getThisLanguages(int secid,int questionid){
         ArrayList<String> langNames = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         try{
-            Cursor cursor = db.rawQuery("SELECT "+LANGUAGE_NAME+" FROM "+TABLE_NAME+" WHERE "+ID+"="+id,new String[]{});
+            Cursor cursor = db.rawQuery("SELECT DISTINCT "+LANGUAGE_NAME+" FROM "+TABLE_NAME+" WHERE "+SECTION_ID+"="+secid+" AND "+ID+"="+questionid,new String[]{});
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                langNames.add(cursor.getString(cursor.getColumnIndex(LANGUAGE_NAME)));
+                cursor.moveToNext();
+            }
         }catch (Exception en){
             Log.e("ERROR",en.toString());
         }
@@ -110,8 +116,19 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
     public ArrayList<Sections> getThisSections(){
         ArrayList<Sections> section = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
+        Log.e("DATABASE:",db.toString());
         try{
-            Cursor cursor = db.rawQuery("SELECT "+SECTION_NAME+" FROM "+TABLE_NAME,new String[]{});
+            Cursor cursor = db.rawQuery("SELECT DISTINCT "+SECTION_ID+","+SECTION_NAME+" FROM "+TABLE_NAME,null);
+
+            Log.e("CURSOR:",cursor.getColumnCount()+" "+cursor.getCount());
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                String id=cursor.getString(0);
+                String name = cursor.getString(1);
+                Log.e("IDSEC",id);
+                section.add(new Sections(Integer.parseInt(id),name));
+                cursor.moveToNext();
+            }
 
         }catch (Exception en){
             Log.e("Error",en.toString());
@@ -135,6 +152,19 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
 
 
         return questions;
+    }
+
+    public int getNoQuestionSectionId(int id){
+        int number=0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT uid FROM "+TABLE_NAME+" WHERE "+SECTION_ID+"="+id,null);
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            number++;
+            cursor.moveToNext();
+        }
+        return  number;
+
     }
 
 

@@ -30,6 +30,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +40,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
@@ -68,7 +71,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
     ArrayList<Question> questionArrayList;
     TextView question;
-    TextView reference;
+    TextView reference,timer;
     RadioButton option1,option2,option3,option4;
     Button previous,skip,submit,calculator,protractor,highlight,scale,rotate,answerstats;
     RadioGroup options;
@@ -91,6 +94,10 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     EditText match1,match2,match3,match4,match5;
     Button section1,section2,section3,section4,section5,section6;
     QuestionDBHelper dbHelper;
+    int positionSec[]=new int[7];
+    int currentSection=1;
+    int sectionid=1;
+    Spinner languageOptions;
 
     @Override
     public void onCreate(Bundle bundle){
@@ -118,6 +125,8 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         match3=(EditText)findViewById(R.id.answer3);
         match4=(EditText)findViewById(R.id.answer4);
         match5=(EditText)findViewById(R.id.answer5);
+        timer=(TextView)findViewById(R.id.timer);
+        languageOptions=(Spinner)findViewById(R.id.languageOptions);
 
 
 
@@ -166,66 +175,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         section5.setVisibility(View.INVISIBLE);
         section6.setVisibility(View.INVISIBLE);
 
-
-        int secCount = 0;
-        for(Sections section:dbHelper.getThisSections()){
-            switch (secCount){
-                case 0:
-                    section1.setText(section.sectionname);
-                    /// Store Section Id here //////////////
-                    secCount++;
-                    break;
-
-                case 1:
-                    section2.setText(section.sectionname);
-                    /// Store Section Id here //////////////
-                    secCount++;
-                    break;
-
-
-                case 3:
-                    section3.setText(section.sectionname);
-                    /// Store Section Id here //////////////
-                    secCount++;
-                    break;
-
-
-                case 4:
-                    section4.setText(section.sectionname);
-                    /// Store Section Id here //////////////
-                    secCount++;
-                    break;
-
-
-                case 5:
-                    section5.setText(section.sectionname);
-                    /// Store Section Id here //////////////
-                    secCount++;
-                    break;
-
-
-                case 6:
-                    section6.setText(section.sectionname);
-                    /// Store Section Id here //////////////
-                    secCount++;
-                    break;
-
-            }
-
-        }
-
-        SharedPreferences shareSections = getSharedPreferences("Sections",MODE_PRIVATE);
-        SharedPreferences.Editor editor = shareSections.edit();
-        editor.putString("section1","false");
-        editor.putString("section2","false");
-        editor.putString("section3","false");
-        editor.putString("section4","false");
-        editor.putString("section5","false");
-        editor.putString("section6","false");
-        editor.apply();
-
-
-        ///////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////
 
 
 
@@ -270,6 +220,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         try{
 
             saveThisQuestionPaper();
+            makeThisSectionsVisible();
 
             //if reference bar is not empty and if it is not already added then add it to array list
             questionArrayList.add(new Question(1,0,Html.fromHtml("M\'1. ?????????? ??????? ??????? ???????? ????'").toString(),"Gujarat","Delhi","UP","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
@@ -296,12 +247,12 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
         //////////  assign time taken from web services
 
-        countDownTimer= new MalibuCountDownTimer(100000,25000);
+        countDownTimer= new MalibuCountDownTimer(100000,1000);
         countDownTimer.start();
 
 
-        position=0;
-        changeQuestion(position);
+        positionSec[currentSection]=0;
+        changeQuestion(positionSec[currentSection]);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -310,25 +261,25 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
                     if(option1.getId()==(options.getCheckedRadioButtonId())){
-                        answers.add(position, new Answers("1"));
+                        answers.add( new Answers("1",currentSection,positionSec[currentSection]));
 
                     }else if(option2.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add(position, new Answers("2"));
+                        answers.add(new Answers("2",currentSection,positionSec[currentSection]));
 
                     }else if(option3.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add(position, new Answers("3"));
+                        answers.add( new Answers("3",currentSection,positionSec[currentSection]));
 
                     }else if(option4.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add(position, new Answers("4"));
+                        answers.add(new Answers("4",currentSection,positionSec[currentSection]));
 
                     }
-                    Log.e(position+"Answers: ",answers.toString());
+                    Log.e(positionSec[currentSection]+"Answers: ",answers.toString());
 
 
-                    if(position+1<questionArrayList.size()){
-                        position++;
-                        changeQuestion(position);
-                    }else if(position+1 == questionArrayList.size()){
+                    if(positionSec[currentSection]+1<dbHelper.getNoQuestionSectionId(currentSection)){
+                        positionSec[currentSection]++;
+                        changeQuestion(positionSec[currentSection]);
+                    }else if(positionSec[currentSection]+1 == dbHelper.getNoQuestionSectionId(currentSection)){
                           showMeTheDialog();
                     }
                 }else{
@@ -338,7 +289,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                         answers.get(position).setMatch(match1.getText().toString(),match2.getText().toString(),match3.getText().toString(),match4.getText().toString(),match5.getText().toString());
                         if(position+1<questionArrayList.size()){
                             position++;
-                            changeQuestion(position);
+                            changeQuestion(positionSec[currentSection]);
                         }else if(position+1 == questionArrayList.size()){
 
 
@@ -358,10 +309,10 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                answers.add(position, new Answers("0"));
-                if (position + 1 < questionArrayList.size()) {
-                    position++;
-                    changeQuestion(position);
+                answers.add(positionSec[currentSection], new Answers("0",sectionid,positionSec[currentSection]));
+                if (positionSec[currentSection] + 1 < dbHelper.getNoQuestionSectionId(currentSection)) {
+                    positionSec[currentSection]++;
+                    changeQuestion(positionSec[currentSection]);
                 }else{
                     int check=0;
                     for(Answers ans:answers){
@@ -382,9 +333,9 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (position > 0) {
-                    position--;
-                    changeQuestion(position);
+                if (positionSec[currentSection] > 0) {
+                    positionSec[currentSection]--;
+                    changeQuestion(positionSec[currentSection]);
                 }
             }
         });
@@ -585,9 +536,38 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
 
-    public void changeQuestion(int position){
+    public void changeQuestion(final int position) {
 
-        Question questionCurrent = questionArrayList.get(position);
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        languageOptions.setAdapter(spinnerAdapter);
+
+        for (String langName : dbHelper.getThisLanguages(1, 1)) {
+            spinnerAdapter.add(langName);
+        }
+
+        spinnerAdapter.notifyDataSetChanged();
+        languageOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                updateQuestion(adapterView.getItemAtPosition(i).toString(),position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        updateQuestion(spinnerAdapter.getItem(0),position);
+
+    }
+
+    public void updateQuestion(String lang,int position){
+
+
+
+        Question questionCurrent = dbHelper.getThisQuestion(currentSection+"",positionSec[currentSection]+"",lang);
 
 
         if(questionCurrent.matchFollowing==1){
@@ -831,9 +811,12 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         }
 
         @Override
-        public void onTick(long millisUntilFinished)
+        public void onTick(long milliseconds)
         {
-            updateTicker((millisUntilFinished));
+            int seconds = (int) (milliseconds / 1000) % 60 ;
+            int minutes = (int) ((milliseconds / (1000*60)) % 60);
+            int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+            timer.setText(hours + ":" + minutes + ":" + seconds);
         }
     }
 
@@ -857,8 +840,9 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         finish();
     }
 
-    public void updateTicker(long remaining){
-        Toast.makeText(getApplicationContext(),remaining/1000+" ",Toast.LENGTH_SHORT).show();
+    public void updateTicker(long milliseconds){
+        Toast.makeText(getApplicationContext(),milliseconds/1000+" ",Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -1752,12 +1736,14 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
                     ////////////// Create your database from here (id + language = primery key) ///////////////
                     JSONArray questionLanguages=null;
+                    String questionId="", questionCorrectAnswer="" , questionMarks="" , questionType="";
                     try {
+
                         JSONObject question = Questions.getJSONObject(j);
-                        String questionId = question.getString("-id");
-                        String questionCorrectAnswer = question.getString("-CorrectAnswer");
-                        String questionMarks = question.getString("-QuestionMarks");
-                        String questionType = question.getString("-Type");
+                        questionId = question.getString("-id");
+                        questionCorrectAnswer = question.getString("-CorrectAnswer");
+                        questionMarks = question.getString("-QuestionMarks");
+                        questionType = question.getString("-Type");
                         Log.e("InfoQuestion", questionId + " " + questionCorrectAnswer + " " + questionMarks + " " + questionType);
 
                         questionLanguages = question.getJSONArray("Laungage");
@@ -1767,10 +1753,12 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
                     for(int k=0;k<questionLanguages.length();k++){
                         JSONObject questionLanguage=null;
+                        String languageName="",languageQuetionText="",optionId1="",optionText1="";
+                        String optionId2="",optionText2="",optionId3="",optionText3="",optionId4="",optionText4="";
                         try {
                             questionLanguage = questionLanguages.getJSONObject(k);
-                            String languageName = questionLanguage.getString("-Name");
-                            String languageQuetionText = questionLanguage.getString("QuestionText");
+                            languageName = questionLanguage.getString("-Name");
+                            languageQuetionText = questionLanguage.getString("QuestionText");
                             Log.e("Language", languageName + " " + languageQuetionText);
                         }catch (JSONException en){
                             Log.e("Error at ",en.toString());
@@ -1781,27 +1769,80 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                             JSONObject options = questionLanguage.getJSONObject("Options");
                             JSONArray option = options.getJSONArray("Option");
 
+                            int optid=0;
                             for (int l = 0; l < option.length(); l++) {
-                                String optionText = "", optionId = "";
+
                                 JSONObject Option = option.getJSONObject(l);
-                                try {
-                                    optionId = Option.getString("-id");
-                                } catch (JSONException e) {
-                                    Log.e("Error At", e.toString());
+                                Log.e("Option" + l, Option.toString());
+                                switch(optid){
+                                    case 0:
+
+                                        try {
+                                            optionId1 = Option.getString("-id");
+                                        } catch (JSONException e) {
+                                            Log.e("Error At", e.toString());
+                                        }
+                                        try {
+                                            optionText1 = Option.getString("#text");
+                                        } catch (JSONException e) {
+                                            Log.e("Error At", e.toString());
+                                        }
+                                        optid++;
+                                        break;
+                                    case 1:
+
+                                        try {
+                                            optionId2 = Option.getString("-id");
+                                        } catch (JSONException e) {
+                                            Log.e("Error At", e.toString());
+                                        }
+                                        try {
+                                            optionText2 = Option.getString("#text");
+                                        } catch (JSONException e) {
+                                            Log.e("Error At", e.toString());
+                                        }
+                                        optid++;
+                                        break;
+                                    case 2:
+
+                                        try {
+                                            optionId3 = Option.getString("-id");
+                                        } catch (JSONException e) {
+                                            Log.e("Error At", e.toString());
+                                        }
+                                        try {
+                                            optionText3 = Option.getString("#text");
+                                        } catch (JSONException e) {
+                                            Log.e("Error At", e.toString());
+                                        }
+                                        optid++;
+                                        break;
+                                    case 3:
+
+                                        try {
+                                            optionId4 = Option.getString("-id");
+                                        } catch (JSONException e) {
+                                            Log.e("Error At", e.toString());
+                                        }
+                                        try {
+                                            optionText4 = Option.getString("#text");
+                                        } catch (JSONException e) {
+                                            Log.e("Error At", e.toString());
+                                        }
+                                        optid++;
+                                        break;
+
                                 }
-                                try {
-                                    optionText = Option.getString("#text");
-                                } catch (JSONException e) {
-                                    Log.e("Error At", e.toString());
-                                }
-                                Log.e("Option" + l, optionId + " " + optionText);
                             }
                         }catch (JSONException en){
                             Log.e("Error At",en.toString());
                         }
 
+                        dbHelper.insertQuestion(questionId,secId,secName,questionCorrectAnswer,questionMarks,questionType,languageName,languageQuetionText,optionText1,optionText2,optionText3,optionText4);
                     }
+
                 }
+
             }
         }catch(JSONException en){
             Log.e("SaveThisQuestion",en.toString());
@@ -1861,9 +1902,8 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
     public void getSecQuestionAndRefresh(int sectionid){
 
-        questionArrayList = dbHelper.getThisSectionQuestions(sectionid);
-        position=0;
-        changeQuestion(position);
+        currentSection=sectionid;
+        changeQuestion(positionSec[currentSection]);
 
     }
 
@@ -1872,6 +1912,87 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+
+    ////////////////////// Section ///////////////////////
+
+
+    public void makeThisSectionsVisible(){
+
+        int secCount = 0;
+        Log.e("Sections: ",dbHelper.getThisSections().toString());
+        for(Sections section:dbHelper.getThisSections()){
+            switch (secCount){
+                case 0:
+                    section1.setVisibility(View.VISIBLE);
+                    section1.setText(section.sectionname);
+                    positionSec[0]=0;
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+                case 1:
+                    section2.setVisibility(View.VISIBLE);
+                    section2.setText(section.sectionname);
+                    positionSec[1]=0;
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+
+                case 3:
+                    section3.setVisibility(View.VISIBLE);
+                    section3.setText(section.sectionname);
+                    positionSec[2]=0;
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+
+                case 4:
+                    section4.setVisibility(View.VISIBLE);
+                    section4.setText(section.sectionname);
+                    positionSec[3]=0;
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+
+                case 5:
+                    section5.setVisibility(View.VISIBLE);
+                    section5.setText(section.sectionname);
+                    positionSec[4]=0;
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+
+                case 6:
+                    section6.setVisibility(View.VISIBLE);
+                    section6.setText(section.sectionname);
+                    positionSec[5]=0;
+                    /// Store Section Id here //////////////
+                    secCount++;
+                    break;
+
+            }
+
+        }
+
+        SharedPreferences shareSections = getSharedPreferences("Sections",MODE_PRIVATE);
+        SharedPreferences.Editor editor = shareSections.edit();
+        editor.putString("section1","false");
+        editor.putString("section2","false");
+        editor.putString("section3","false");
+        editor.putString("section4","false");
+        editor.putString("section5","false");
+        editor.putString("section6","false");
+        editor.apply();
+
+
+
+    }
 
 
 }
