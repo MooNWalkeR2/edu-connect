@@ -55,6 +55,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
+        Log.e("SECIDS::",sectionid);
         try{
             cv.put(ID,id);
             cv.put(SECTION_ID,sectionid);
@@ -82,11 +83,24 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
     public Question getThisQuestion(String secid,String id , String languageName){
         Question question = new Question();
         SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor=null;
+
+        Log.e("VALUES",secid + "  "+id+"   "+languageName);
         try {
-            Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ID + "=" + id + " AND " + LANGUAGE_NAME + "=" + languageName, new String[]{});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + SECTION_ID + "=" + secid + " AND "+ID + "=" + id + " AND languagename='"+languageName+"'", null);
         }catch (Exception en){
             Log.e("ERROR",en.toString());
         }
+        cursor.moveToFirst();
+        question.question=cursor.getString(cursor.getColumnIndex(LANGUAGE_TEXT));
+        question.option1=cursor.getString(cursor.getColumnIndex(OPTION_ONE));
+        question.option2=cursor.getString(cursor.getColumnIndex(OPTION_TWO));
+        question.option3=cursor.getString(cursor.getColumnIndex(OPTION_THREE));
+        question.option4=cursor.getString(cursor.getColumnIndex(OPTION_FOUR));
+        question.correctAnswer=cursor.getString(cursor.getColumnIndex(CORRECT_ANSWER));
+        question.questionMarks=cursor.getString(cursor.getColumnIndex(QUESTION_MARKS));
+        question.sectionid=cursor.getString(cursor.getColumnIndex(SECTION_ID));
+        Log.e("LANGUAGE :",cursor.getString(cursor.getColumnIndex(LANGUAGE_NAME))+ "N'??????? ??'");
 
         /////////////////////////// SET THE QUESTION HERE //////////////////////////////////////
 
@@ -157,7 +171,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
     public int getNoQuestionSectionId(int id){
         int number=0;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT uid FROM "+TABLE_NAME+" WHERE "+SECTION_ID+"="+id,null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT uid FROM "+TABLE_NAME+" WHERE "+SECTION_ID+"="+id,null);
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
             number++;
@@ -165,6 +179,11 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         }
         return  number;
 
+    }
+
+    public void deleteAllData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME,null,null);
     }
 
 

@@ -7,13 +7,13 @@ public class Question {
 
 
     int num;
-    String question,option1,option2,option3,option4,language,id;
-    int correctAnswer,questionMarks,sectionid;
-    String sectionname;
-    String referencePar;
+    public String question,option1,option2,option3,option4,language,id;
+    public String  correctAnswer,questionMarks,sectionid;
+    public String sectionname;
+    public String referencePar;
     int matchFollowing;
     String row11,row12,row13,row14,row15,row21,row22,row23,row24,row25;
-    int groupID;
+    public int groupID;
 
     public Question(){}
 

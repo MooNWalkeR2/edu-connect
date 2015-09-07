@@ -42,13 +42,14 @@
                 android:text="15"
                 android:gravity="center"
                 android:textSize="18sp"
-                android:layout_margin="10dp" />
+                android:layout_margin="10dp"
+                android:id="@+id/totalQuestions"/>
 
         </LinearLayout>
 
         <ListView
             android:id="@+id/ListAnswerStats"
-            android:layout_height="wrap_content"
+            android:layout_height="400dp"
             android:layout_width="match_parent">
         </ListView>
 

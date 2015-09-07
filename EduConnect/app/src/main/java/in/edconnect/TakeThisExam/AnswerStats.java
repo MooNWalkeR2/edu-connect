@@ -3,9 +3,11 @@ package in.edconnect.TakeThisExam;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,14 +23,31 @@ public class AnswerStats extends Activity {
 
 
     private ListView answerStatsList;
-    private ArrayList<Answers> answersArrayList;
+    private int total;
+    private ArrayList<Integer> answersArrayList;
+    private TextView totalQuestions;
+    private ArrayList<String> answered = new ArrayList<>();
 
 
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
         setContentView(R.layout.answerstats_layout);
-        answersArrayList=getIntent().getExtras().getParcelableArrayList("list");
-        answerStatsList = (ListView)findViewById(R.id.ListAnswerStats);
+        answersArrayList=getIntent().getExtras().getIntegerArrayList("Answered");
+        total=getIntent().getExtras().getInt("Total");
+
+        answerStatsList=(ListView)findViewById(R.id.ListAnswerStats);
+        totalQuestions=(TextView)findViewById(R.id.totalQuestions);
+        answered.clear();
+        for(int answer:answersArrayList){
+            answered.add(" Q."+answer+"     Answered!");
+        }
+
+        Log.e("RECEIVED",answersArrayList.toString());
+        Log.e("ARRAY", answered.toString());
+        totalQuestions.setText(total/2+"");
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,answered);
+
+        answerStatsList.setAdapter(arrayAdapter);
 
     }
 

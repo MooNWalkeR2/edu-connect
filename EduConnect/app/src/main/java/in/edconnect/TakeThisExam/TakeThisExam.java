@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -141,7 +142,17 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             public void onClick(View view) {
                 /////// Send arraylist of answer and and also the section id //////////////
                 Intent intent = new Intent();
-                intent.putParcelableArrayListExtra("list",answers);
+                ArrayList<Integer> answered=new ArrayList<>();
+                for(Answers answer:answers){
+                    if(answer==null){
+                        continue;
+                    }
+                    if(answer.sectionId==currentSection && !answer.ans.equals("0")){
+                        answered.add(answer.position);
+                    }
+                }
+                intent.putExtra("Total", dbHelper.getNoQuestionSectionId(currentSection));
+                intent.putIntegerArrayListExtra("Answered", answered);
                 intent.setClass(TakeThisExam.this,AnswerStats.class);
                 startActivity(intent);   //// Check if the data of variable is preserved or not
             }
@@ -219,6 +230,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         //in that while loop check if the question is match the following or not if it is then set it
         try{
 
+            dbHelper.deleteAllData();
             saveThisQuestionPaper();
             makeThisSectionsVisible();
 
@@ -251,8 +263,12 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         countDownTimer.start();
 
 
-        positionSec[currentSection]=0;
+        positionSec[currentSection]=1;
         changeQuestion(positionSec[currentSection]);
+
+        for(int k=0;k<100;k++){
+            answers.add(null);
+        }
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,40 +277,43 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
                     if(option1.getId()==(options.getCheckedRadioButtonId())){
-                        answers.add( new Answers("1",currentSection,positionSec[currentSection]));
+                        answers.set( Integer.parseInt(currentSection+positionSec[currentSection]+""),new Answers("1",currentSection,positionSec[currentSection]));
 
                     }else if(option2.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add(new Answers("2",currentSection,positionSec[currentSection]));
+                        answers.set(Integer.parseInt(currentSection+positionSec[currentSection]+""),new Answers("2",currentSection,positionSec[currentSection]));
 
                     }else if(option3.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add( new Answers("3",currentSection,positionSec[currentSection]));
+                        answers.set(Integer.parseInt(currentSection+positionSec[currentSection]+""), new Answers("3",currentSection,positionSec[currentSection]));
 
                     }else if(option4.getId() == (options.getCheckedRadioButtonId())){
-                        answers.add(new Answers("4",currentSection,positionSec[currentSection]));
+                        answers.set(Integer.parseInt(currentSection+positionSec[currentSection]+""),new Answers("4",currentSection,positionSec[currentSection]));
 
                     }
                     Log.e(positionSec[currentSection]+"Answers: ",answers.toString());
 
 
-                    if(positionSec[currentSection]+1<dbHelper.getNoQuestionSectionId(currentSection)){
+                    Log.e("NO OF QUESTION",dbHelper.getNoQuestionSectionId(currentSection)+"");
+                    if(positionSec[currentSection]+1<dbHelper.getNoQuestionSectionId(currentSection)/2){
                         positionSec[currentSection]++;
                         changeQuestion(positionSec[currentSection]);
-                    }else if(positionSec[currentSection]+1 == dbHelper.getNoQuestionSectionId(currentSection)){
-                          showMeTheDialog();
+                    }else if(positionSec[currentSection]+1 == dbHelper.getNoQuestionSectionId(currentSection)/2){
+                          //showMeTheDialog();
+                        Log.e("END","OF SECTION"+currentSection);
                     }
                 }else{
                     if(questionArrayList.get(position).matchFollowing==1){
                         Log.e("MAnswers: "," 1:" + match1.getText()+" 2:"+match2.getText()+" 3:"+match3.getText()+" 4:"+match4.getText()+" 5:"+match5.getText());
                         answers.add(position, new Answers("1995"));
                         answers.get(position).setMatch(match1.getText().toString(),match2.getText().toString(),match3.getText().toString(),match4.getText().toString(),match5.getText().toString());
-                        if(position+1<questionArrayList.size()){
-                            position++;
+                        if(positionSec[currentSection]+1<dbHelper.getNoQuestionSectionId(currentSection)/2){
+                            positionSec[currentSection]++;
                             changeQuestion(positionSec[currentSection]);
-                        }else if(position+1 == questionArrayList.size()){
+                        }else if(positionSec[currentSection]+1 == dbHelper.getNoQuestionSectionId(currentSection)/2){
 
 
 
-                            showMeTheDialog();
+                           // showMeTheDialog();
+                            Log.e("END","OF SECTION"+currentSection);
                         }
                     }else {
                         Toast.makeText(getApplicationContext(), "Please Select One Option!", Toast.LENGTH_SHORT).show();
@@ -310,7 +329,8 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             @Override
             public void onClick(View view) {
                 answers.add(positionSec[currentSection], new Answers("0",sectionid,positionSec[currentSection]));
-                if (positionSec[currentSection] + 1 < dbHelper.getNoQuestionSectionId(currentSection)) {
+                Log.e("NO OF QUESTIONS",dbHelper.getNoQuestionSectionId(currentSection)+"");
+                if (positionSec[currentSection] + 1 < dbHelper.getNoQuestionSectionId(currentSection)/2) {
                     positionSec[currentSection]++;
                     changeQuestion(positionSec[currentSection]);
                 }else{
@@ -542,7 +562,8 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageOptions.setAdapter(spinnerAdapter);
 
-        for (String langName : dbHelper.getThisLanguages(1, 1)) {
+        Log.e("SECTION",currentSection+" "+positionSec[currentSection]);
+        for (String langName : dbHelper.getThisLanguages(currentSection, positionSec[currentSection])) {
             spinnerAdapter.add(langName);
         }
 
@@ -567,7 +588,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
 
-        Question questionCurrent = dbHelper.getThisQuestion(currentSection+"",positionSec[currentSection]+"",lang);
+        Question questionCurrent = dbHelper.getThisQuestion(currentSection+"",(positionSec[currentSection]+1)+"",lang);
 
 
         if(questionCurrent.matchFollowing==1){
@@ -588,31 +609,36 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.question));
                 question.setBackground(d);
             }else {
-                question.setText(questionCurrent.question);
+                Spanned sp=Html.fromHtml(questionCurrent.question+"<b>Hey</b>");
+                question.setText(sp);
             }
             if(checkForLink(questionCurrent.option1)){
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option1));
                 option1.setBackground(d);
             }else {
-                option1.setText(questionCurrent.option1);
+                Spanned sp=Html.fromHtml(questionCurrent.option1);
+                option1.setText(sp);
             }
             if(checkForLink(questionCurrent.option2)){
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option2));
                 option2.setBackground(d);
             }else {
-                option2.setText(questionCurrent.option2);
+                Spanned sp=Html.fromHtml(questionCurrent.option2);
+                option2.setText(sp);
             }
             if(checkForLink(questionCurrent.option3)){
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option3));
                 option3.setBackground(d);
             }else {
-                option3.setText(questionCurrent.option3);
+                Spanned sp=Html.fromHtml(questionCurrent.option3);
+                option3.setText(sp);
             }
             if(checkForLink(questionCurrent.option4)){
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option4));
                 option4.setBackground(d);
             }else {
-                option4.setText(questionCurrent.option4);
+                Spanned sp=Html.fromHtml(questionCurrent.option4);
+                option4.setText(sp);
             }
 
 
@@ -655,7 +681,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         reference.setText(spannable);
 
         try{
-            switch (Integer.parseInt(answers.get(position).ans)){
+            switch (Integer.parseInt(answers.get(Integer.parseInt(currentSection+positionSec[position]+"")).ans)){
                 case 1:
                     option1.setChecked(true);
                     break;
@@ -779,6 +805,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 //// Check if every shared preferences is true then ////////////////
                 //// Start Activity otherwise getSecQuestionAndRefresh /////////////
 
+                dbHelper.deleteAllData();
                 startActivity(new Intent(TakeThisExam.this, HomePageActivity.class));
                 finish();
             }
@@ -1243,7 +1270,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "          \"SectionQuestions\": {\n" +
                 "            \"Question\": [\n" +
                 "              {\n" +
-                "                \"-id\": \"6\",\n" +
+                "                \"-id\": \"1\",\n" +
                 "                \"-CorrectAnswer\": \"2\",\n" +
                 "                \"-QuestionMarks\": \"1\",\n" +
                 "                \"-PassageNo\": \"1\",\n" +
@@ -1300,7 +1327,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                ]\n" +
                 "              },\n" +
                 "              {\n" +
-                "                \"-id\": \"7\",\n" +
+                "                \"-id\": \"2\",\n" +
                 "                \"-CorrectAnswer\": \"1\",\n" +
                 "                \"-QuestionMarks\": \"1\",\n" +
                 "                \"-PassageNo\": \"1\",\n" +
@@ -1357,7 +1384,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                ]\n" +
                 "              },\n" +
                 "              {\n" +
-                "                \"-id\": \"8\",\n" +
+                "                \"-id\": \"3\",\n" +
                 "                \"-CorrectAnswer\": \"2\",\n" +
                 "                \"-QuestionMarks\": \"1\",\n" +
                 "                \"-PassageNo\": \"1\",\n" +
@@ -1414,7 +1441,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                ]\n" +
                 "              },\n" +
                 "              {\n" +
-                "                \"-id\": \"9\",\n" +
+                "                \"-id\": \"4\",\n" +
                 "                \"-CorrectAnswer\": \"3\",\n" +
                 "                \"-QuestionMarks\": \"1\",\n" +
                 "                \"-Type\": \"MCQ\",\n" +
@@ -1505,7 +1532,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                ]\n" +
                 "              },\n" +
                 "              {\n" +
-                "                \"-id\": \"10\",\n" +
+                "                \"-id\": \"5\",\n" +
                 "                \"-CorrectAnswer\": \"3\",\n" +
                 "                \"-QuestionMarks\": \"1\",\n" +
                 "                \"-Type\": \"MCQ\",\n" +
@@ -1903,6 +1930,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     public void getSecQuestionAndRefresh(int sectionid){
 
         currentSection=sectionid;
+        Log.e("HERE",positionSec[currentSection]+"");
         changeQuestion(positionSec[currentSection]);
 
     }
@@ -1927,7 +1955,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 case 0:
                     section1.setVisibility(View.VISIBLE);
                     section1.setText(section.sectionname);
-                    positionSec[0]=0;
+                    positionSec[1]=1;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1935,7 +1963,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 case 1:
                     section2.setVisibility(View.VISIBLE);
                     section2.setText(section.sectionname);
-                    positionSec[1]=0;
+                    positionSec[2]=1;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1944,7 +1972,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 case 3:
                     section3.setVisibility(View.VISIBLE);
                     section3.setText(section.sectionname);
-                    positionSec[2]=0;
+                    positionSec[3]=1;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1953,7 +1981,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 case 4:
                     section4.setVisibility(View.VISIBLE);
                     section4.setText(section.sectionname);
-                    positionSec[3]=0;
+                    positionSec[4]=1;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1962,7 +1990,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 case 5:
                     section5.setVisibility(View.VISIBLE);
                     section5.setText(section.sectionname);
-                    positionSec[4]=0;
+                    positionSec[5]=1;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1971,7 +1999,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 case 6:
                     section6.setVisibility(View.VISIBLE);
                     section6.setText(section.sectionname);
-                    positionSec[5]=0;
+                    positionSec[6]=1;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
