@@ -60,6 +60,7 @@ import java.util.Locale;
 
 import in.edconnect.Database.QuestionDBHelper;
 import in.edconnect.HomePageActivity;
+import in.edconnect.ImageGetter.URLImageParser;
 import in.edconnect.R;
 import in.edconnect.SelectableTextView.SelectableTextView;
 import in.edconnect.TextView.CustomTextView;
@@ -99,6 +100,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     int currentSection=1;
     int sectionid=1;
     Spinner languageOptions;
+    boolean section[]=new boolean[7];
 
     @Override
     public void onCreate(Bundle bundle){
@@ -275,18 +277,18 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             public void onClick(View view) {
                 if (!(options.getCheckedRadioButtonId()==-1)) {
 
-
+                    Log.e("AnswerId",Integer.parseInt(currentSection+positionSec[currentSection]+"")+"");
                     if(option1.getId()==(options.getCheckedRadioButtonId())){
-                        answers.set( Integer.parseInt(currentSection+positionSec[currentSection]+""),new Answers("1",currentSection,positionSec[currentSection]));
+                        answers.set( Integer.parseInt(currentSection+""+positionSec[currentSection]+""),new Answers("1",currentSection,positionSec[currentSection]));
 
                     }else if(option2.getId() == (options.getCheckedRadioButtonId())){
-                        answers.set(Integer.parseInt(currentSection+positionSec[currentSection]+""),new Answers("2",currentSection,positionSec[currentSection]));
+                        answers.set(Integer.parseInt(currentSection+""+positionSec[currentSection]+""),new Answers("2",currentSection,positionSec[currentSection]));
 
                     }else if(option3.getId() == (options.getCheckedRadioButtonId())){
-                        answers.set(Integer.parseInt(currentSection+positionSec[currentSection]+""), new Answers("3",currentSection,positionSec[currentSection]));
+                        answers.set(Integer.parseInt(currentSection+""+positionSec[currentSection]+""), new Answers("3",currentSection,positionSec[currentSection]));
 
                     }else if(option4.getId() == (options.getCheckedRadioButtonId())){
-                        answers.set(Integer.parseInt(currentSection+positionSec[currentSection]+""),new Answers("4",currentSection,positionSec[currentSection]));
+                        answers.set(Integer.parseInt(currentSection+""+positionSec[currentSection]+""),new Answers("4",currentSection,positionSec[currentSection]));
 
                     }
                     Log.e(positionSec[currentSection]+"Answers: ",answers.toString());
@@ -298,6 +300,32 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                         changeQuestion(positionSec[currentSection]);
                     }else if(positionSec[currentSection]+1 == dbHelper.getNoQuestionSectionId(currentSection)/2){
                           //showMeTheDialog();
+
+
+                        section[currentSection]=true;
+                        Log.e("Sections",section[1] + " " + section[2] + section[3] + section[4] + "");
+                        int i=0;
+                        boolean all=true;
+                        for(boolean sec:section){
+                            Log.e("i",i+""+sec);
+                            if(i==0){
+
+                            }else {
+                                if (!sec) {
+                                    Log.e("i", i + "");
+                                    all = false;
+                                    currentSection = i;
+                                    changeQuestion(0);
+                                    break;
+                                }
+                            }
+                            i++;
+                        }
+                        if(all==true){
+                            Intent intent = new Intent(TakeThisExam.this,CheckThisExam.class);
+                            intent.putParcelableArrayListExtra("Answers",answers);
+                            startActivity(intent);
+                        }
                         Log.e("END","OF SECTION"+currentSection);
                     }
                 }else{
@@ -609,39 +637,45 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.question));
                 question.setBackground(d);
             }else {
-                Spanned sp=Html.fromHtml(questionCurrent.question+"<b>Hey</b>");
+                URLImageParser p = new URLImageParser(question, this);
+                Spanned sp=Html.fromHtml(questionCurrent.question+"<img src='http://www.keenthemes.com/preview/metronic/theme/assets/global/plugins/jcrop/demos/demo_files/image1.jpg'/>",p,null);
                 question.setText(sp);
             }
             if(checkForLink(questionCurrent.option1)){
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option1));
                 option1.setBackground(d);
             }else {
-                Spanned sp=Html.fromHtml(questionCurrent.option1);
+                URLImageParser p = new URLImageParser(option1, this);
+                Spanned sp=Html.fromHtml(questionCurrent.option1,p,null);
                 option1.setText(sp);
             }
             if(checkForLink(questionCurrent.option2)){
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option2));
                 option2.setBackground(d);
             }else {
-                Spanned sp=Html.fromHtml(questionCurrent.option2);
+                URLImageParser p = new URLImageParser(option2, this);
+                Spanned sp=Html.fromHtml(questionCurrent.option2,p,null);
                 option2.setText(sp);
             }
             if(checkForLink(questionCurrent.option3)){
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option3));
                 option3.setBackground(d);
             }else {
-                Spanned sp=Html.fromHtml(questionCurrent.option3);
+                URLImageParser p = new URLImageParser(option3, this);
+                Spanned sp=Html.fromHtml(questionCurrent.option3,p,null);
                 option3.setText(sp);
             }
             if(checkForLink(questionCurrent.option4)){
                 Drawable d = new BitmapDrawable(getResources(),decodeThisUrl(questionCurrent.option4));
                 option4.setBackground(d);
             }else {
-                Spanned sp=Html.fromHtml(questionCurrent.option4);
+                URLImageParser p = new URLImageParser(option4, this);
+                Spanned sp=Html.fromHtml(questionCurrent.option4,p,null);
                 option4.setText(sp);
             }
 
-
+            URLImageParser p = new URLImageParser(reference, this);
+            Spanned sp=Html.fromHtml(questionCurrent.referencePar,p,null);
             reference.setText(questionCurrent.referencePar);
         }catch (Exception en){}
         option1.setChecked(false);
@@ -1950,20 +1984,27 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
         int secCount = 0;
         Log.e("Sections: ",dbHelper.getThisSections().toString());
-        for(Sections section:dbHelper.getThisSections()){
+        for(int i=1;i<=6;i++){
+            section[i]=true;
+        }
+
+        for(Sections sectio:dbHelper.getThisSections()){
             switch (secCount){
                 case 0:
                     section1.setVisibility(View.VISIBLE);
-                    section1.setText(section.sectionname);
+                    section1.setText(sectio.sectionname);
                     positionSec[1]=1;
+                    section[1]=false;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
 
                 case 1:
                     section2.setVisibility(View.VISIBLE);
-                    section2.setText(section.sectionname);
+                    section2.setText(sectio.sectionname);
                     positionSec[2]=1;
+
+                    section[2]=false;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1971,8 +2012,9 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
                 case 3:
                     section3.setVisibility(View.VISIBLE);
-                    section3.setText(section.sectionname);
+                    section3.setText(sectio.sectionname);
                     positionSec[3]=1;
+                    section[3]=false;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1980,8 +2022,9 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
                 case 4:
                     section4.setVisibility(View.VISIBLE);
-                    section4.setText(section.sectionname);
+                    section4.setText(sectio.sectionname);
                     positionSec[4]=1;
+                    section[4]=false;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1989,8 +2032,9 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
                 case 5:
                     section5.setVisibility(View.VISIBLE);
-                    section5.setText(section.sectionname);
+                    section5.setText(sectio.sectionname);
                     positionSec[5]=1;
+                    section[5]=false;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -1998,8 +2042,9 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
                 case 6:
                     section6.setVisibility(View.VISIBLE);
-                    section6.setText(section.sectionname);
+                    section6.setText(sectio.sectionname);
                     positionSec[6]=1;
+                    section[6]=false;
                     /// Store Section Id here //////////////
                     secCount++;
                     break;
@@ -2007,16 +2052,6 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             }
 
         }
-
-        SharedPreferences shareSections = getSharedPreferences("Sections",MODE_PRIVATE);
-        SharedPreferences.Editor editor = shareSections.edit();
-        editor.putString("section1","false");
-        editor.putString("section2","false");
-        editor.putString("section3","false");
-        editor.putString("section4","false");
-        editor.putString("section5","false");
-        editor.putString("section6","false");
-        editor.apply();
 
 
 

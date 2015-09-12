@@ -4,6 +4,7 @@ package in.edconnect.TakeThisExam;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import in.edconnect.Database.QuestionDBHelper;
 import in.edconnect.HomePageActivity;
 import in.edconnect.R;
 
@@ -20,8 +22,12 @@ public class CheckThisExam extends Activity{
     RadioButton option1,option2,option3,option4;
     Button submit,previous;
     ArrayList<Question> questionsList = new ArrayList<>();
-    ArrayList<String> answers = new ArrayList<>();;
+    ArrayList<Answers> answers = new ArrayList<>();;
+    ArrayList<Question> questions = new ArrayList<>();
     int position=0;
+    QuestionDBHelper dbHelper;
+    private int totalMarks=0 , score=0 , percentage=0;
+
 
     @Override
     public void onCreate(Bundle bundle){
@@ -36,51 +42,42 @@ public class CheckThisExam extends Activity{
         reference = (TextView) findViewById(R.id.referencePar);
         submit = (Button) findViewById(R.id.submit);
         previous = (Button) findViewById(R.id.previous);
+        dbHelper=new QuestionDBHelper(this);
 
         //////Get this answersheet from web services
 
-        questionsList.add(new Question(1,2,"What is the capital of India?", "Gujarat", "Delhi", "UP", "Kerala", "This is a reference paragraph for you . You have to answer the questions after reading this paragraph",0));
-        answers.add(0,"1");
-        questionsList.add(new Question(2,2,"The Centre for Cellular and Molecular Biology is situated at?", "Patna", "Jaipur", "Jammu Kashmir", "Kerala", "This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
-        answers.add(1,"2");
-        questionsList.add(new Question(3,2,"The famous Dilwara Temples are situated in?","Rajasthan","Maharashtra","UP","Himachal","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
-        answers.add(2,"1");
-        questionsList.add(new Question(4,2,"What is the capital of India?", "Telangana", "Delhi", "UP", "Maharastra", "This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
-        answers.add(3,"4");
-        questionsList.add(new Question(5,2,"Grand Central Terminal, Park Avenue, New York is the world's?", "largest railway station", "highest railway station", "None", "longest railway station", "",0));
-        answers.add(4,"3");
-        questionsList.add(new Question(6,2,"For which of the following disciplines is Nobel Prize awarded??", "Physics and Chemistry", " \tPhysiology or Medicine", "Literature, Peace and Economics", "All of the above", "",0));
-        answers.add(5, "2");
-        questionsList.add(new Question(7,2,"Hitler party which came into power in 1933 is known as?", "Labour Party", "Nazi Party", "Democratic Party", "All of the above", "",0));
+        answers = getIntent().getParcelableArrayListExtra("Answers");
+        Log.e("Answers", answers.toString());
 
-
-        changeQuestion(0);
-
-
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (position + 1 >= questionsList.size()) {
-                    startActivity(new Intent(CheckThisExam.this, HomePageActivity.class));
-                    finish();
-                } else {
-                    position++;
-                    changeQuestion(position);
+        int i=0;
+        Question question;
+        while(i<answers.size()){
+            try{
+                Log.e("Ans" + i, answers.get(i).sectionId + " " + answers.get(i).position + "  " + answers.get(i).ans);
+                question=dbHelper.getThisQuestion(answers.get(i).sectionId,answers.get(i).position);
+                totalMarks+=Integer.parseInt(question.questionMarks);
+                Log.e("Ans",answers.get(i).ans + " and "+question.correctAnswer);
+                if(answers.get(i).ans.equals(question.correctAnswer)){
+                    score+=Integer.parseInt(question.questionMarks);
                 }
-            }
-        });
+                questions.add(question);
+            }catch (NullPointerException en){
 
-        previous.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(position<=0){
-
-                }else{
-                    position--;
-                    changeQuestion(position);
-                }
             }
-        });
+            i++;
+        }
+
+        Log.e("FinalSheet",score+" out of "+totalMarks);
+
+
+
+
+        //changeQuestion(0);
+
+
+
+
+
 
     }
 
@@ -104,7 +101,7 @@ public class CheckThisExam extends Activity{
             option3.setEnabled(false);
             option4.setEnabled(false);
 
-            switch (Integer.parseInt(answers.get(position))) {
+            switch (Integer.parseInt(answers.get(position).ans)) {
                 case 0:
                     break;
                 case 1:

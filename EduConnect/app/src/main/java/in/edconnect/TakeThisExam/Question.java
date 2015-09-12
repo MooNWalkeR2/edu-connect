@@ -25,7 +25,6 @@ public class Question {
         this.option4 = option4;
         this.referencePar=referencePar;
         this.matchFollowing=matchFollowing;
-
         this.groupID=groupID;
 
     }

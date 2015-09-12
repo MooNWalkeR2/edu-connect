@@ -13,6 +13,13 @@ public class Answers  implements Parcelable{
     String ans;
     String match1="0",match2="0",match3="0",match4="0",match5="0";
 
+    public Answers(Parcel source){
+        position=source.readInt();
+        sectionId=source.readInt();
+        ans=source.readString();
+    }
+
+
     public Answers(String ans){
         this.ans=ans;
     }
@@ -22,6 +29,7 @@ public class Answers  implements Parcelable{
         this.sectionId=sectionId;
         this.position=position;
     }
+
 
     public void setAns(String ans){
         this.ans=ans;
@@ -35,14 +43,25 @@ public class Answers  implements Parcelable{
         this.match5=match5;
     }
 
-
-    @Override
     public int describeContents() {
-        return 0;
+        return this.hashCode();
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(position);
+        dest.writeInt(sectionId);
+        dest.writeString(ans);
+    //    dest.writeString(color);
     }
+
+    public static final Parcelable.Creator CREATOR
+            = new Parcelable.Creator() {
+        public Answers createFromParcel(Parcel in) {
+            return new Answers(in);
+        }
+
+        public Answers[] newArray(int size) {
+            return new Answers[size];
+        }
+    };
 }

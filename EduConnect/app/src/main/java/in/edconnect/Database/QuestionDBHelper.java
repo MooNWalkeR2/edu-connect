@@ -55,7 +55,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        Log.e("SECIDS::",sectionid);
+        Log.e("SECIDS::", sectionid);
         try{
             cv.put(ID,id);
             cv.put(SECTION_ID,sectionid);
@@ -105,6 +105,31 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         /////////////////////////// SET THE QUESTION HERE //////////////////////////////////////
 
         return question;
+    }
+
+
+
+    public Question getThisQuestion( int sectionid , int position){
+        Question question = new Question();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try{
+            cursor= db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + SECTION_ID + "="+sectionid +"AND "+ ID +"="+position,null);
+        }catch(Exception en){
+            Log.e("THis","getThisQuestion(sec,pos) not working="+en.toString());
+        }
+
+        cursor.moveToFirst();
+        question.question=cursor.getString(cursor.getColumnIndex(LANGUAGE_TEXT));
+        question.option1=cursor.getString(cursor.getColumnIndex(OPTION_ONE));
+        question.option2=cursor.getString(cursor.getColumnIndex(OPTION_TWO));
+        question.option3=cursor.getString(cursor.getColumnIndex(OPTION_THREE));
+        question.option4=cursor.getString(cursor.getColumnIndex(OPTION_FOUR));
+        question.correctAnswer=cursor.getString(cursor.getColumnIndex(CORRECT_ANSWER));
+        question.questionMarks=cursor.getString(cursor.getColumnIndex(QUESTION_MARKS));
+
+        return question;
+
     }
 
 
