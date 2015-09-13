@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:layout_marginBottom="15dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+
+<RelativeLayout
+
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:orientation="vertical"
@@ -17,6 +15,14 @@
         android:layout_marginTop="15dp">
 
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/answerstatus"
+            android:textSize="16sp"
+            android:textColor="#F44336"
+            android:text="You answered it correctly!"
+            android:gravity="center"/>
 
 
         <TextView
@@ -25,7 +31,7 @@
             android:textSize="20sp"
             android:text="What is the capital of India?"
             android:layout_gravity="center"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="8dp"
             android:textColor="#000000"
             android:id="@+id/question"
             android:padding="10dp"/>
@@ -233,4 +239,3 @@
     </LinearLayout>
     </RelativeLayout>
 
-</ScrollView>

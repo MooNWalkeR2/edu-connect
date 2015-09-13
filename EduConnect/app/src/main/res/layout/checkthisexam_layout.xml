@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_width="match_parent">
 
     <LinearLayout
@@ -13,105 +13,37 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Viewing Answersheet"
-            android:textSize="16sp"
-            android:padding="15dp"
-            android:id="@+id/referencePar"/>
-
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            android:text="Total Marks:"
+            android:textSize="20sp"
+            android:id="@+id/totalmarks"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            android:text="Marks Scored:"
             android:textSize="20sp"
-            android:text="1. భారతదేశంలో నూతనంగా ఏర్పడిన రాష్ట్రం ఏది?"
-            android:layout_gravity="center"
-            android:layout_marginTop="25dp"
-            android:textColor="#000000"
-            android:id="@+id/question"
-            android:padding="10dp"/>
+            android:id="@+id/marksscored"/>
 
-        <RadioGroup
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#b2dfdb"
-            android:id="@+id/options"
-            >
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="చత్తీస్ ఘడ్"
-                android:layout_gravity="left"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:id="@+id/option1"/>
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="జార్ఖండ్   "
-                android:layout_gravity="left"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:id="@+id/option2"/>
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="తెలంగాణ   "
-                android:layout_gravity="left"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:id="@+id/option3"/>
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ఉత్తరాఖండ్			"
-                android:layout_gravity="left"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:id="@+id/option4"
-                android:layout_marginBottom="25dp"/>
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:padding="5dp"
+            android:text="Percentage:"
+            android:textSize="20sp"
+            android:id="@+id/percentage"/>
 
 
-        </RadioGroup>
-
-        <LinearLayout
+        <ListView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp">
-
-
-
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Previous"
-                android:layout_weight=".28"
-                android:background="#009688"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:id="@+id/previous"/>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Next"
-                android:layout_weight=".28"
-                android:background="#009688"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:id="@+id/submit"/>
-
-
-        </LinearLayout>
-
-
-
+            android:layout_height="3000dp"
+            android:layout_margin="5dp"
+            android:id="@+id/answerlist"></ListView>
 
     </LinearLayout>
 

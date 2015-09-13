@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -18,30 +19,29 @@ import in.edconnect.R;
 
 public class CheckThisExam extends Activity{
 
-    TextView question,reference;
+    TextView totalmarks,totalscore,totalpercentage;
     RadioButton option1,option2,option3,option4;
     Button submit,previous;
     ArrayList<Question> questionsList = new ArrayList<>();
-    ArrayList<Answers> answers = new ArrayList<>();;
+    ArrayList<Answers> answers = new ArrayList<>();
+    ArrayList<Answers> answersSend = new ArrayList<>();
     ArrayList<Question> questions = new ArrayList<>();
+    ListView answerListView;
     int position=0;
     QuestionDBHelper dbHelper;
-    private int totalMarks=0 , score=0 , percentage=0;
+    private int totalMarks=0 , score=0 ;
+    float percentage=0;
+    MySimpleArrayAdapter arrayAdapter;
 
 
     @Override
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
         setContentView(R.layout.checkthisexam_layout);
-
-        question = (TextView) findViewById(R.id.question);
-        option1 = (RadioButton) findViewById(R.id.option1);
-        option2 = (RadioButton) findViewById(R.id.option2);
-        option3 = (RadioButton) findViewById(R.id.option3);
-        option4 = (RadioButton) findViewById(R.id.option4);
-        reference = (TextView) findViewById(R.id.referencePar);
-        submit = (Button) findViewById(R.id.submit);
-        previous = (Button) findViewById(R.id.previous);
+        totalmarks=(TextView)findViewById(R.id.totalmarks);
+        totalscore=(TextView)findViewById(R.id.marksscored);
+        totalpercentage=(TextView)findViewById(R.id.percentage);
+        answerListView=(ListView)findViewById(R.id.answerlist);
         dbHelper=new QuestionDBHelper(this);
 
         //////Get this answersheet from web services
@@ -61,65 +61,20 @@ public class CheckThisExam extends Activity{
                     score+=Integer.parseInt(question.questionMarks);
                 }
                 questions.add(question);
+                answersSend.add(answers.get(i));
             }catch (NullPointerException en){
 
             }
             i++;
         }
 
-        Log.e("FinalSheet",score+" out of "+totalMarks);
+        percentage=((float)score / (float)(score+totalMarks))*100;
+        totalmarks.setText("Total Marks :    "+totalMarks);
+        totalscore.setText("Marks Scored :   "+score);
+        totalpercentage.setText("Percentage Scored :    "+percentage+"%");
+        Log.e("FinalSheet", score + " out of " + totalMarks);
 
-
-
-
-        //changeQuestion(0);
-
-
-
-
-
-
-    }
-
-
-
-    public void changeQuestion(int position) {
-
-        Question questionCurrent = questionsList.get(position);
-
-
-        try {
-
-            question.setText(questionCurrent.question);
-            option1.setText(questionCurrent.option1);
-            option2.setText(questionCurrent.option2);
-            option3.setText(questionCurrent.option3);
-            option4.setText(questionCurrent.option4);
-            reference.setText(questionCurrent.referencePar);
-            option1.setEnabled(false);
-            option2.setEnabled(false);
-            option3.setEnabled(false);
-            option4.setEnabled(false);
-
-            switch (Integer.parseInt(answers.get(position).ans)) {
-                case 0:
-                    break;
-                case 1:
-                    option1.setChecked(true);
-                    break;
-                case 2:
-                    option2.setChecked(true);
-                    break;
-                case 3:
-                    option3.setChecked(true);
-                    break;
-                case 4:
-                    option4.setChecked(true);
-                    break;
-
-            }
-
-        }catch (Exception en){}
-
+        arrayAdapter=new MySimpleArrayAdapter(this,questions,answersSend);
+        answerListView.setAdapter(arrayAdapter);
     }
 }

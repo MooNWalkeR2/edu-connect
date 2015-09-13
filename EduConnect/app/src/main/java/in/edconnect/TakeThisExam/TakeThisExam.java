@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import in.edconnect.Database.PassageDBHelper;
 import in.edconnect.Database.QuestionDBHelper;
 import in.edconnect.HomePageActivity;
 import in.edconnect.ImageGetter.URLImageParser;
@@ -72,10 +73,10 @@ import in.edconnect.TouchImageView.TouchImageView;
 public class TakeThisExam extends Activity implements View.OnTouchListener {
 
     ArrayList<Question> questionArrayList;
-    TextView question;
+    TextView question,termsandconditions,instructions;
     TextView reference,timer;
     RadioButton option1,option2,option3,option4;
-    Button previous,skip,submit,calculator,protractor,highlight,scale,rotate,answerstats;
+    Button previous,skip,submit,calculator,protractor,highlight,scale,rotate,answerstats,termsandconditionnext,instructionsnext;
     RadioGroup options;
     private int position;
     ArrayList<Answers > answers;
@@ -101,6 +102,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     int sectionid=1;
     Spinner languageOptions;
     boolean section[]=new boolean[7];
+    PassageDBHelper passageDBHelper=null;
 
     @Override
     public void onCreate(Bundle bundle){
@@ -130,6 +132,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         match5=(EditText)findViewById(R.id.answer5);
         timer=(TextView)findViewById(R.id.timer);
         languageOptions=(Spinner)findViewById(R.id.languageOptions);
+        termsandconditions=(TextView)findViewById(R.id.termsandconditions);
 
 
 
@@ -171,7 +174,8 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         section5 = (Button)findViewById(R.id.section5);
         section6 = (Button)findViewById(R.id.section6);
 
-        dbHelper = new QuestionDBHelper(this);
+
+
 
         SectionClick sectionClick =  new SectionClick();
         section1.setOnClickListener(sectionClick);
@@ -232,7 +236,12 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         //in that while loop check if the question is match the following or not if it is then set it
         try{
 
-            dbHelper.deleteAllData();
+            dbHelper = new QuestionDBHelper(this);
+            try {
+                dbHelper.deleteAllData();
+            }catch (Exception en){
+                dbHelper=new QuestionDBHelper(this);
+            }
             saveThisQuestionPaper();
             makeThisSectionsVisible();
 
@@ -356,24 +365,38 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                answers.add(positionSec[currentSection], new Answers("0",sectionid,positionSec[currentSection]));
+                answers.add(Integer.parseInt(currentSection+""+positionSec[currentSection]+""), new Answers("0",sectionid,positionSec[currentSection]));
                 Log.e("NO OF QUESTIONS",dbHelper.getNoQuestionSectionId(currentSection)+"");
                 if (positionSec[currentSection] + 1 < dbHelper.getNoQuestionSectionId(currentSection)/2) {
                     positionSec[currentSection]++;
                     changeQuestion(positionSec[currentSection]);
                 }else{
-                    int check=0;
-                    for(Answers ans:answers){
-                        if(ans.ans.equals("0")){
 
-                        }else{
-                            check=1;
+                    section[currentSection]=true;
+                    Log.e("Sections",section[1] + " " + section[2] + section[3] + section[4] + "");
+                    int i=0;
+                    boolean all=true;
+                    for(boolean sec:section){
+                        Log.e("i",i+""+sec);
+                        if(i==0){
+
+                        }else {
+                            if (!sec) {
+                                Log.e("i", i + "");
+                                all = false;
+                                currentSection = i;
+                                changeQuestion(0);
+                                break;
+                            }
                         }
+                        i++;
                     }
-                    if(check==0){
-                        Toast.makeText(getApplicationContext(),"You haven't selected any answers!",Toast.LENGTH_SHORT).show();
-                        showMeTheDialog();
+                    if(all==true){
+                        Intent intent = new Intent(TakeThisExam.this,CheckThisExam.class);
+                        intent.putParcelableArrayListExtra("Answers",answers);
+                        startActivity(intent);
                     }
+
                 }
             }
         });
@@ -590,7 +613,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageOptions.setAdapter(spinnerAdapter);
 
-        Log.e("SECTION",currentSection+" "+positionSec[currentSection]);
+        Log.e("SECTION", currentSection + " " + positionSec[currentSection]);
         for (String langName : dbHelper.getThisLanguages(currentSection, positionSec[currentSection])) {
             spinnerAdapter.add(langName);
         }
@@ -599,7 +622,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         languageOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                updateQuestion(adapterView.getItemAtPosition(i).toString(),position);
+                updateQuestion(adapterView.getItemAtPosition(i).toString(), position);
             }
 
             @Override
@@ -607,8 +630,8 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
             }
         });
-
-        updateQuestion(spinnerAdapter.getItem(0),position);
+        Log.e("Spinner",spinnerAdapter.getCount()+"");
+        updateQuestion(spinnerAdapter.getItem(0), position);
 
     }
 
@@ -616,8 +639,22 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
 
-        Question questionCurrent = dbHelper.getThisQuestion(currentSection+"",(positionSec[currentSection]+1)+"",lang);
+        Question questionCurrent = dbHelper.getThisQuestion(currentSection + "", (positionSec[currentSection] + 1) + "", lang);
+        String referenceBar="";
 
+
+        try {
+            Log.e("PassageNo",Integer.parseInt(questionCurrent.passageNo)+"");
+            if (Integer.parseInt(questionCurrent.passageNo) >= 0) {
+
+                referenceBar = passageDBHelper.getPassage(questionCurrent.passageNo,lang);
+                Log.e("Passage",referenceBar+"");
+            }
+        }catch (Exception e){
+            referenceBar="";
+            Log.e("ErrorIn",e.toString());
+        }
+        questionCurrent.referencePar=referenceBar;
 
         if(questionCurrent.matchFollowing==1){
             options.setVisibility(View.GONE);
@@ -638,7 +675,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 question.setBackground(d);
             }else {
                 URLImageParser p = new URLImageParser(question, this);
-                Spanned sp=Html.fromHtml(questionCurrent.question+"<img src='http://www.keenthemes.com/preview/metronic/theme/assets/global/plugins/jcrop/demos/demo_files/image1.jpg'/>",p,null);
+                Spanned sp=Html.fromHtml(questionCurrent.question+"??????? ???????? ???",p,null);
                 question.setText(sp);
             }
             if(checkForLink(questionCurrent.option1)){
@@ -1696,12 +1733,60 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "  }\n" +
                 "}";
 
+
         try {
             questionPaper = new JSONObject(response);
             QuestionPaper = questionPaper.getJSONObject("ExamQuestionPaper");
         }catch (JSONException e){
             Log.e("Parsing",e.toString());
         }
+
+        ///// Passages ////
+
+
+        try{
+            try {
+                passageDBHelper = new PassageDBHelper(this);
+            }catch (Exception e){
+                Log.e("passageDB",e.toString());
+            }
+            Log.e("1","this");
+            JSONObject passages = QuestionPaper.getJSONObject("Passages");
+            Log.e("2","this");
+            Log.e("3","this");
+            //JSONArray passage = passages.getJSONArray("Passage");
+
+            //for(int i=0;i<passage.length();i++){
+
+            //JSONObject passage=
+                JSONObject passage = passages.getJSONObject("Passage");
+                Log.e("4","this");
+                //JSONObject passageOnes = passage.getJSONObject(i);
+                JSONObject passageOnes=passage;
+                Log.e("5","this");
+                String id = passageOnes.getString("-id");
+            Log.e("5.1","this");
+                JSONArray passageLanguages = passageOnes.getJSONArray("Laungage");
+            Log.e("6","this");
+                for(int j=0;j<passageLanguages.length();j++){
+                    JSONObject finalPassage = passageLanguages.getJSONObject(j);
+                    Log.e("7","this");
+                    String passagename = finalPassage.getString("-Name");
+                    Log.e("8","this");
+                    String passagetext = finalPassage.getString("PassageText");
+                    passageDBHelper.insertPassage(id,passagename,passagetext);
+                }
+
+            //}
+
+
+        }catch (Exception e){
+            Log.e("ErrorIn","Storing Passages");
+        }
+
+
+
+        //////////////////////////////////////////////////////////////////////
 
 
         try{
@@ -1797,12 +1882,19 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
                     ////////////// Create your database from here (id + language = primery key) ///////////////
                     JSONArray questionLanguages=null;
-                    String questionId="", questionCorrectAnswer="" , questionMarks="" , questionType="";
+                    String questionId="", questionCorrectAnswer="" , questionMarks="" , questionType="",passageNo="";
                     try {
 
                         JSONObject question = Questions.getJSONObject(j);
                         questionId = question.getString("-id");
                         questionCorrectAnswer = question.getString("-CorrectAnswer");
+                        try {
+                            passageNo = question.getString("-PassageNo");
+                            Log.e("PassageNo","Successfull"+passageNo);
+                        }catch (Exception e){
+                            Log.e("ErrorIn","NO passageNo");
+                            passageNo = "-1";
+                        }
                         questionMarks = question.getString("-QuestionMarks");
                         questionType = question.getString("-Type");
                         Log.e("InfoQuestion", questionId + " " + questionCorrectAnswer + " " + questionMarks + " " + questionType);
@@ -1899,7 +1991,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                             Log.e("Error At",en.toString());
                         }
 
-                        dbHelper.insertQuestion(questionId,secId,secName,questionCorrectAnswer,questionMarks,questionType,languageName,languageQuetionText,optionText1,optionText2,optionText3,optionText4);
+                        dbHelper.insertQuestion(questionId,secId,secName,questionCorrectAnswer,questionMarks,questionType,languageName,languageQuetionText,optionText1,optionText2,optionText3,optionText4,passageNo);
                     }
 
                 }

@@ -9,9 +9,9 @@ public class Question {
     int num;
     public String question,option1,option2,option3,option4,language,id;
     public String  correctAnswer,questionMarks,sectionid;
-    public String sectionname;
+    public String sectionname,passageNo;
     public String referencePar;
-    int matchFollowing;
+    int matchFollowing=0;
     String row11,row12,row13,row14,row15,row21,row22,row23,row24,row25;
     public int groupID;
 

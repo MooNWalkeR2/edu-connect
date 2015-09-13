@@ -32,16 +32,17 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
     public static final String OPTION_TWO="option2";
     public static final String OPTION_THREE="option3";
     public static final String OPTION_FOUR="option4";
+    public static final String PASSAGE_NO="passageno";
 
 
     public QuestionDBHelper(Context context){
-        super(context, DATABASE_NAME , null , 1);
+        super(context, DATABASE_NAME , null , 2);
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table questions (uid integer primary key , id text , sectionid text , sectionname text , correctanswer text , questionmarks text ,type text , languagename text , languagetext text , option1 text , option2 text ,option3 text , option4 text) ");
+        db.execSQL("create table questions (uid integer primary key , id text , sectionid text , sectionname text , correctanswer text , questionmarks text ,type text , languagename text , languagetext text ,passageno text, option1 text , option2 text ,option3 text , option4 text) ");
     }
 
     @Override
@@ -50,7 +51,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertQuestion(String id ,String sectionid , String sectionname,String correctAnswer , String questionMarks ,String type , String languageName , String languageText,String option1,String option2,String option3,String option4){
+    public boolean insertQuestion(String id ,String sectionid , String sectionname,String correctAnswer , String questionMarks ,String type , String languageName , String languageText,String option1,String option2,String option3,String option4,String passageNo){
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -69,6 +70,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
             cv.put(OPTION_TWO,option2);
             cv.put(OPTION_THREE,option3);
             cv.put(OPTION_FOUR,option4);
+            cv.put(PASSAGE_NO,passageNo);
             db.insert(TABLE_NAME,null,cv);
             Log.e("INSERTED:","INTO DATABASE");
         }catch(Exception en){
@@ -100,6 +102,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         question.correctAnswer=cursor.getString(cursor.getColumnIndex(CORRECT_ANSWER));
         question.questionMarks=cursor.getString(cursor.getColumnIndex(QUESTION_MARKS));
         question.sectionid=cursor.getString(cursor.getColumnIndex(SECTION_ID));
+
         Log.e("LANGUAGE :",cursor.getString(cursor.getColumnIndex(LANGUAGE_NAME))+ "N'??????? ??'");
 
         /////////////////////////// SET THE QUESTION HERE //////////////////////////////////////
@@ -110,11 +113,12 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
 
 
     public Question getThisQuestion( int sectionid , int position){
+        Log.e("In","GetThisQuestion");
         Question question = new Question();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
         try{
-            cursor= db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + SECTION_ID + "="+sectionid +"AND "+ ID +"="+position,null);
+            cursor= db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + SECTION_ID + "="+sectionid +" AND "+ ID +"="+position,null);
         }catch(Exception en){
             Log.e("THis","getThisQuestion(sec,pos) not working="+en.toString());
         }
@@ -127,7 +131,8 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         question.option4=cursor.getString(cursor.getColumnIndex(OPTION_FOUR));
         question.correctAnswer=cursor.getString(cursor.getColumnIndex(CORRECT_ANSWER));
         question.questionMarks=cursor.getString(cursor.getColumnIndex(QUESTION_MARKS));
-
+        question.passageNo=cursor.getString(cursor.getColumnIndex(PASSAGE_NO));
+        Log.e("PassageNO",question.passageNo);
         return question;
 
     }
@@ -147,6 +152,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
             Log.e("ERROR",en.toString());
         }
 
+        Log.e("LangNames",langNames.size()+"");
         //////////////////////////  SET THE LANGUAGES HERE ////////////////////////////////
 
         return langNames;

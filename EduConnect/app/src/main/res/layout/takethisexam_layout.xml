@@ -1,12 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_width="match_parent">
-
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="600dp"
+            android:id="@+id/termsandconditionslayout"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/termsandconditions"
+                android:text="Terms And Condition"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp"
+                android:padding="10dp"/>
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="Next"
+                android:id="@+id/termsandconditionsnext"
+                />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="600dp"
+            android:id="@+id/instructionslayout"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/instructions"
+                android:text="Terms And Condition"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp"
+                android:padding="10dp"/>
+
+            <Button
+                android:layout_width="160dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="Start A Test"
+                android:id="@+id/instructionsnext"
+                />
+
+        </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/examlayout"
+        android:visibility="gone">
 
 
 <LinearLayout
@@ -510,6 +567,8 @@
 </RelativeLayout>
 
 
+
+    </RelativeLayout>
 
     </RelativeLayout>
 

@@ -1,6 +1,7 @@
 package in.edconnect.TakeThisExam;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ public class MySimpleArrayAdapter extends BaseAdapter {
         this.context = context;
         this.values = values;
         this.answers = answers;
+
     }
 
     @Override
@@ -61,6 +63,7 @@ public class MySimpleArrayAdapter extends BaseAdapter {
 
         match = (LinearLayout)rowView.findViewById(R.id.match);
         options=(RadioGroup)rowView.findViewById(R.id.options);
+
 
         Question questionCurrent = values.get(position);
 
@@ -130,6 +133,7 @@ public class MySimpleArrayAdapter extends BaseAdapter {
         RadioButton option2=(RadioButton)rowView.findViewById(R.id.option2);
         RadioButton option3=(RadioButton)rowView.findViewById(R.id.option3);
         RadioButton option4=(RadioButton)rowView.findViewById(R.id.option4);
+        TextView answerStatus = (TextView)rowView.findViewById(R.id.answerstatus);
 
         question.setText(values.get(position).question);
         option1.setText(values.get(position).option1);
@@ -137,10 +141,20 @@ public class MySimpleArrayAdapter extends BaseAdapter {
         option3.setText(values.get(position).option3);
         option4.setText(values.get(position).option4);
 
+
+        if(values.get(position).correctAnswer.equals(answers.get(position).ans)){
+            answerStatus.setText("You answered it correctly!");
+        }else if(answers.get(position).ans.equals("0")){
+            answerStatus.setText("You did not answer this question!");
+        }else{
+            answerStatus.setText("You did not answered it correctly!");
+        }
+
+
         try {
 
 
-            switch (Integer.parseInt(answers.get(position).ans)) {
+            switch (Integer.parseInt(values.get(position).correctAnswer)) {
                 case 0:
                     break;
                 case 1:
@@ -160,6 +174,37 @@ public class MySimpleArrayAdapter extends BaseAdapter {
         }catch (Exception en){
             Log.e("Pos", " " + position + " " + answers.size());
         }
+
+
+        option1.setTextColor(Color.BLACK);
+        option2.setTextColor(Color.BLACK);
+        option3.setTextColor(Color.BLACK);
+        option4.setTextColor(Color.BLACK);
+
+        try {
+
+
+            switch (Integer.parseInt(answers.get(position).ans)) {
+                case 0:
+                    break;
+                case 1:
+                    option1.setTextColor(Color.RED);
+                    break;
+                case 2:
+                    option2.setTextColor(Color.RED);
+                    break;
+                case 3:
+                    option3.setTextColor(Color.RED);
+                    break;
+                case 4:
+                    option4.setTextColor(Color.RED);
+                    break;
+
+            }
+        }catch (Exception en){
+            Log.e("Pos", " " + position + " " + answers.size());
+        }
+
 
         option1.setEnabled(false);
         option2.setEnabled(false);
