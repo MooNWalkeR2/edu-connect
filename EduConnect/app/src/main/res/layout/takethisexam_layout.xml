@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/examlayout"
-        android:visibility="gone">
+        android:visibility="visible">
 
 
 <LinearLayout
@@ -204,10 +204,11 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textSize="19sp"
-        android:padding="15dp"
+        android:padding="10dp"
         android:id="@+id/referencePar"
         android:textIsSelectable="true"
-        android:bufferType="spannable"/>
+        android:bufferType="spannable"
+        android:visibility="gone"/>
 
 
     <TextView
@@ -217,7 +218,7 @@
         android:textSize="20sp"
         android:text="1. భారతదేశంలో నూతనంగా ఏర్పడిన రాష్ట్రం ఏది?"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:textColor="#000000"
         android:id="@+id/question"
         android:padding="10dp"

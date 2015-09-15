@@ -56,7 +56,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        Log.e("SECIDS::", sectionid);
+        Log.e("SECIDS Ques::", sectionid+ " "+id+" "+passageNo);
         try{
             cv.put(ID,id);
             cv.put(SECTION_ID,sectionid);
@@ -102,7 +102,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         question.correctAnswer=cursor.getString(cursor.getColumnIndex(CORRECT_ANSWER));
         question.questionMarks=cursor.getString(cursor.getColumnIndex(QUESTION_MARKS));
         question.sectionid=cursor.getString(cursor.getColumnIndex(SECTION_ID));
-
+        question.passageNo=cursor.getString(cursor.getColumnIndex(PASSAGE_NO));
         Log.e("LANGUAGE :",cursor.getString(cursor.getColumnIndex(LANGUAGE_NAME))+ "N'??????? ??'");
 
         /////////////////////////// SET THE QUESTION HERE //////////////////////////////////////
@@ -124,15 +124,19 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         }
 
         cursor.moveToFirst();
-        question.question=cursor.getString(cursor.getColumnIndex(LANGUAGE_TEXT));
-        question.option1=cursor.getString(cursor.getColumnIndex(OPTION_ONE));
-        question.option2=cursor.getString(cursor.getColumnIndex(OPTION_TWO));
-        question.option3=cursor.getString(cursor.getColumnIndex(OPTION_THREE));
-        question.option4=cursor.getString(cursor.getColumnIndex(OPTION_FOUR));
-        question.correctAnswer=cursor.getString(cursor.getColumnIndex(CORRECT_ANSWER));
-        question.questionMarks=cursor.getString(cursor.getColumnIndex(QUESTION_MARKS));
-        question.passageNo=cursor.getString(cursor.getColumnIndex(PASSAGE_NO));
-        Log.e("PassageNO",question.passageNo);
+        try {
+            question.question = cursor.getString(cursor.getColumnIndex(LANGUAGE_TEXT));
+            question.option1 = cursor.getString(cursor.getColumnIndex(OPTION_ONE));
+            question.option2 = cursor.getString(cursor.getColumnIndex(OPTION_TWO));
+            question.option3 = cursor.getString(cursor.getColumnIndex(OPTION_THREE));
+            question.option4 = cursor.getString(cursor.getColumnIndex(OPTION_FOUR));
+            question.correctAnswer = cursor.getString(cursor.getColumnIndex(CORRECT_ANSWER));
+            question.questionMarks = cursor.getString(cursor.getColumnIndex(QUESTION_MARKS));
+            question.passageNo = cursor.getString(cursor.getColumnIndex(PASSAGE_NO));
+        }catch(Exception en){
+            Log.e("ErrorInCursor","GetThisLanguages");
+        }
+        Log.e("PassageNO", question.passageNo);
         return question;
 
     }

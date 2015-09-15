@@ -51,7 +51,7 @@ public class Answers  implements Parcelable{
         dest.writeInt(position);
         dest.writeInt(sectionId);
         dest.writeString(ans);
-    //    dest.writeString(color);
+        //    dest.writeString(color);
     }
 
     public static final Parcelable.Creator CREATOR

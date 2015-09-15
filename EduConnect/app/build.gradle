@@ -4,6 +4,8 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
+
+
     defaultConfig {
         applicationId "in.edconnect"
         minSdkVersion 14
@@ -17,6 +19,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
 }
 
 dependencies {

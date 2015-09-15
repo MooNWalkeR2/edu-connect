@@ -23,6 +23,7 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.format.Time;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -54,7 +55,10 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,7 +80,8 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     TextView question,termsandconditions,instructions;
     TextView reference,timer;
     RadioButton option1,option2,option3,option4;
-    Button previous,skip,submit,calculator,protractor,highlight,scale,rotate,answerstats,termsandconditionnext,instructionsnext;
+    Button previous,skip,submit,calculator,protractor,highlight,scale,rotate,answerstats,termsandconditionsnext,instructionsnext;
+    RelativeLayout termsandconditionslayout,instructionslayout,examlayout;
     RadioGroup options;
     private int position;
     ArrayList<Answers > answers;
@@ -103,6 +108,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     Spinner languageOptions;
     boolean section[]=new boolean[7];
     PassageDBHelper passageDBHelper=null;
+    String startTime="0",examDuration="0";
 
     @Override
     public void onCreate(Bundle bundle){
@@ -133,9 +139,33 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         timer=(TextView)findViewById(R.id.timer);
         languageOptions=(Spinner)findViewById(R.id.languageOptions);
         termsandconditions=(TextView)findViewById(R.id.termsandconditions);
+        termsandconditionsnext=(Button)findViewById(R.id.termsandconditionsnext);
+        instructions=(TextView)findViewById(R.id.instructions);
+        instructionsnext=(Button)findViewById(R.id.instructionsnext);
+        termsandconditionslayout=(RelativeLayout)findViewById(R.id.termsandconditionslayout);
+        instructionslayout=(RelativeLayout)findViewById(R.id.instructionslayout);
+        examlayout=(RelativeLayout)findViewById(R.id.examlayout);
+
+        examlayout.setVisibility(View.GONE);
+        instructionslayout.setVisibility(View.GONE);
+        termsandconditionslayout.setVisibility(View.VISIBLE);
+        termsandconditionsnext.setEnabled(false);
 
 
 
+
+        ////////////////////////////// Terms and conditions ////////////////////////////
+
+
+        termsandconditions.setText("Business Standard Private Ltd allows you to access its websites (www.business-standard.com & www.businessstandard.com, www.smartinvestor.in, www.bshindi.com and www.bsmotoring,com) and all the content in them on certain terms and conditions specified below. By accessing or subscribing to any part of these sites, you are explicitly agreeing to the terms and conditions below.\n" +
+                "\n" +
+                "These terms and conditions were updated as on December 1, 2003, and Business Standard Private Ltd reserves all rights to change, modify or alter these terms and conditions at any point of time with or without notifying existing users and subscribers. If you do not agree to the new terms and conditions you should not use the business-standard.com and other associated sites mentioned above. Paid users will be refunded the unexpired portions of their subscriptions on a pro rata basis if they send us an email within 72 hours of changes made in the terms and conditions." +
+                "Business Standard Private Ltd allows you to access its websites (www.business-standard.com & www.businessstandard.com, www.smartinvestor.in, www.bshindi.com and www.bsmotoring,com) and all the content in them on certain terms and conditions specified below. By accessing or subscribing to any part of these sites, you are explicitly agreeing to the terms and conditions below.\n" +
+                "\" +\n" +
+                "                    \"\\n\" +\n" +
+                "                    \"These terms and conditions were updated as on December 1, 2003, and Business Standard Private Ltd reserves all ri");
+
+        ////////////////////////////////////////////////////////////////////
 
 
         //////////////////////// Answer stats /////////////////
@@ -185,12 +215,12 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         section5.setOnClickListener(sectionClick);
         section6.setOnClickListener(sectionClick);
 
-        section1.setVisibility(View.INVISIBLE);
-        section2.setVisibility(View.INVISIBLE);
-        section3.setVisibility(View.INVISIBLE);
-        section4.setVisibility(View.INVISIBLE);
-        section5.setVisibility(View.INVISIBLE);
-        section6.setVisibility(View.INVISIBLE);
+        section1.setVisibility(View.GONE);
+        section2.setVisibility(View.GONE);
+        section3.setVisibility(View.GONE);
+        section4.setVisibility(View.GONE);
+        section5.setVisibility(View.GONE);
+        section6.setVisibility(View.GONE);
 
         /////////////////////////////////////////////////////////////////////////
 
@@ -281,6 +311,60 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             answers.add(null);
         }
 
+
+
+
+       //////////////// Terms and conditions and instructions//////////////////////////////////
+
+        termsandconditionsnext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                examlayout.setVisibility(View.GONE);
+                instructionslayout.setVisibility(View.VISIBLE);
+                termsandconditionslayout.setVisibility(View.GONE);
+            }
+        });
+
+
+        instructionsnext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar c = Calendar.getInstance();
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                int minute = c.get(Calendar.MINUTE);
+                String hourServer = startTime.substring(0,1);
+                String hourMinute = startTime.substring(3,4);
+
+
+                if(hour>=Integer.parseInt(hourServer)){
+                    if(minute>=Integer.parseInt(hourMinute)) {
+                        Log.e("Now","You can start the exam!!");
+                        examlayout.setVisibility(View.VISIBLE);
+                        instructionslayout.setVisibility(View.GONE);
+                        termsandconditionslayout.setVisibility(View.GONE);
+
+                    }
+                    else{
+                        Log.e("Now","You can not start an exam!");
+                        examlayout.setVisibility(View.VISIBLE);
+                        instructionslayout.setVisibility(View.GONE);
+                        termsandconditionslayout.setVisibility(View.GONE);
+                    }
+                }else{
+                    Log.e("Now","You can not start an exam!");
+                    examlayout.setVisibility(View.VISIBLE);
+                    instructionslayout.setVisibility(View.GONE);
+                    termsandconditionslayout.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
+
+
+
+        ///////////////////////////////////////////////////////////////////////////////
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -324,7 +408,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                                     Log.e("i", i + "");
                                     all = false;
                                     currentSection = i;
-                                    changeQuestion(0);
+                                    changeQuestion(1);
                                     break;
                                 }
                             }
@@ -631,15 +715,18 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             }
         });
         Log.e("Spinner",spinnerAdapter.getCount()+"");
-        updateQuestion(spinnerAdapter.getItem(0), position);
-
+        try {
+            updateQuestion(spinnerAdapter.getItem(0), position);
+        }catch (Exception e){
+            Log.e("updateQ"," "+e.toString());
+        }
     }
 
     public void updateQuestion(String lang,int position){
 
 
 
-        Question questionCurrent = dbHelper.getThisQuestion(currentSection + "", (positionSec[currentSection] + 1) + "", lang);
+        Question questionCurrent = dbHelper.getThisQuestion(currentSection + "", (positionSec[currentSection] ) + "", lang);
         String referenceBar="";
 
 
@@ -649,9 +736,13 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
                 referenceBar = passageDBHelper.getPassage(questionCurrent.passageNo,lang);
                 Log.e("Passage",referenceBar+"");
+                reference.setVisibility(View.VISIBLE);
+            }else{
+                reference.setVisibility(View.GONE);
             }
         }catch (Exception e){
             referenceBar="";
+            reference.setVisibility(View.GONE);
             Log.e("ErrorIn",e.toString());
         }
         questionCurrent.referencePar=referenceBar;
@@ -675,7 +766,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 question.setBackground(d);
             }else {
                 URLImageParser p = new URLImageParser(question, this);
-                Spanned sp=Html.fromHtml(questionCurrent.question+"??????? ???????? ???",p,null);
+                Spanned sp=Html.fromHtml(questionCurrent.question+"పర్యటించింది",p,null);
                 question.setText(sp);
             }
             if(checkForLink(questionCurrent.option1)){
@@ -1084,29 +1175,52 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                  },\n" +
                 "                  {\n" +
                 "                    \"-Name\": \"Telugu\",\n" +
-                "                    \"QuestionText\": \"?????????? ??????? ??????? ???????? ????\",\n" +
+                "                    \"QuestionText\": \"భారతదేశంలో నూతనంగా ఏర్పడిన రాష్ట్రం ఏది?\",\n" +
                 "                    \"Options\": {\n" +
                 "                      \"Option\": [\n" +
                 "                        {\n" +
                 "                          \"-id\": \"1\",\n" +
-                "                          \"#text\": \"??????? ???\"\n" +
+                "                          \"#text\": \"చత్తీస్ ఘడ్\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"2\",\n" +
-                "                          \"#text\": \"????????\"\n" +
+                "                          \"#text\": \"జార్ఖండ్\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"3\",\n" +
-                "                          \"#text\": \"???????\"\n" +
+                "                          \"#text\": \"తెలంగాణ\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"4\",\n" +
-                "                          \"#text\": \"??????????\"\n" +
+                "                          \"#text\": \"ఉత్తరాఖండ్\"\n" +
                 "                        }\n" +
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "            https://www.google.com\n" +
+                "        \"\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"-id\": \"2\",\n" +
@@ -1140,29 +1254,52 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                  },\n" +
                 "                  {\n" +
                 "                    \"-Name\": \"Telugu\",\n" +
-                "                    \"QuestionText\": \"??????? ???????????? ????????? ????????\",\n" +
+                "                    \"QuestionText\": \"తెలంగాణ రాష్ట్రావతరణ దినోత్సవం ఎప్పుడు?\",\n" +
                 "                    \"Options\": {\n" +
                 "                      \"Option\": [\n" +
                 "                        {\n" +
                 "                          \"-id\": \"1\",\n" +
-                "                          \"#text\": \"???? 1, 2014\"\n" +
+                "                          \"#text\": \"జూన్ 1, 2014\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"2\",\n" +
-                "                          \"#text\": \"???? 2, 2014\"\n" +
+                "                          \"#text\": \"జూన్ 2, 2014\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"3\",\n" +
-                "                          \"#text\": \"???? 3, 2014\"\n" +
+                "                          \"#text\": \"జూన్ 3, 2014\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"4\",\n" +
-                "                          \"#text\": \"???? 4, 2014\"\n" +
+                "                          \"#text\": \"జూన్ 4, 2014\"\n" +
                 "                        }\n" +
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"-id\": \"3\",\n" +
@@ -1196,29 +1333,52 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                  },\n" +
                 "                  {\n" +
                 "                    \"-Name\": \"Telugu\",\n" +
-                "                    \"QuestionText\": \"??????? ??????? ????\",\n" +
+                "                    \"QuestionText\": \"తెలంగాణ రాజధాని ఏది?\",\n" +
                 "                    \"Options\": {\n" +
                 "                      \"Option\": [\n" +
                 "                        {\n" +
                 "                          \"-id\": \"1\",\n" +
-                "                          \"#text\": \"?????????\"\n" +
+                "                          \"#text\": \"హైదరాబాద్\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"2\",\n" +
-                "                          \"#text\": \"?????????\"\n" +
+                "                          \"#text\": \"బెంగుళూరు\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"3\",\n" +
-                "                          \"#text\": \"???????\"\n" +
+                "                          \"#text\": \"విజయవాడ\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"4\",\n" +
-                "                          \"#text\": \"??????\"\n" +
+                "                          \"#text\": \"చెన్నై\"\n" +
                 "                        }\n" +
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"-id\": \"4\",\n" +
@@ -1252,29 +1412,52 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                  },\n" +
                 "                  {\n" +
                 "                    \"-Name\": \"Telugu\",\n" +
-                "                    \"QuestionText\": \"??????? ??????? ????? ??????????? ?????\",\n" +
+                "                    \"QuestionText\": \"తెలంగాణ రాష్ట్ర మొదటి ముఖ్యమంత్రి ఎవరు?\",\n" +
                 "                    \"Options\": {\n" +
                 "                      \"Option\": [\n" +
                 "                        {\n" +
                 "                          \"-id\": \"1\",\n" +
-                "                          \"#text\": \"???????? ????????\"\n" +
+                "                          \"#text\": \"దేవేంద్ర ఫడ్నవిస్\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"2\",\n" +
-                "                          \"#text\": \"??.????????? ????\"\n" +
+                "                          \"#text\": \"కే.చంద్రశేఖర రావ్\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"3\",\n" +
-                "                          \"#text\": \"??????? ??????\"\n" +
+                "                          \"#text\": \"శివరాజ్ చౌహాన్\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"4\",\n" +
-                "                          \"#text\": \"???? ?????\"\n" +
+                "                          \"#text\": \"రమణ్ సింఘ్\"\n" +
                 "                        }\n" +
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"-id\": \"5\",\n" +
@@ -1308,29 +1491,52 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                  },\n" +
                 "                  {\n" +
                 "                    \"-Name\": \"Telugu\",\n" +
-                "                    \"QuestionText\": \"? ??????? ?????? ??? ??????? ???????? ??????????? ?????\",\n" +
+                "                    \"QuestionText\": \"ఈ క్రింది వానిలో ఏది తెలంగాణ సరిహద్దు రాష్ట్రాలలో ఒకటి?\",\n" +
                 "                    \"Options\": {\n" +
                 "                      \"Option\": [\n" +
                 "                        {\n" +
                 "                          \"-id\": \"1\",\n" +
-                "                          \"#text\": \"??????\"\n" +
+                "                          \"#text\": \"బీహార్\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"2\",\n" +
-                "                          \"#text\": \"??????????\"\n" +
+                "                          \"#text\": \"మహారాష్ట్ర\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"3\",\n" +
-                "                          \"#text\": \"????\"\n" +
+                "                          \"#text\": \"కేరళ\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"4\",\n" +
-                "                          \"#text\": \"????????\"\n" +
+                "                          \"#text\": \"తమిళనాడు\"\n" +
                 "                        }\n" +
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              }\n" +
                 "            ]\n" +
                 "          }\n" +
@@ -1373,29 +1579,52 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                  },\n" +
                 "                  {\n" +
                 "                    \"-Name\": \"Telugu\",\n" +
-                "                    \"QuestionText\": \"?????? ??????????\",\n" +
+                "                    \"QuestionText\": \"హెలెన్ ఎటువంటిది?\",\n" +
                 "                    \"Options\": {\n" +
                 "                      \"Option\": [\n" +
                 "                        {\n" +
                 "                          \"-id\": \"1\",\n" +
-                "                          \"#text\": \"????????\"\n" +
+                "                          \"#text\": \"కౄరమైనది\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"2\",\n" +
-                "                          \"#text\": \"?????? ??????? ????? ????????\"\n" +
+                "                          \"#text\": \"కరుణరస భరితమైన హృదయం కలిగినది\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"3\",\n" +
-                "                          \"#text\": \"??????????\"\n" +
+                "                          \"#text\": \"అమాయకమైనది\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"4\",\n" +
-                "                          \"#text\": \"??????????? ??????\"\n" +
+                "                          \"#text\": \"మతిస్థిమితం లేనిది\"\n" +
                 "                        }\n" +
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"-id\": \"2\",\n" +
@@ -1430,29 +1659,52 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                  },\n" +
                 "                  {\n" +
                 "                    \"-Name\": \"Telugu\",\n" +
-                "                    \"QuestionText\": \"?????? ???????????? ????????? ??? ???????????????? ?????????\",\n" +
+                "                    \"QuestionText\": \"హెలెన్ ఎటువంటివాళ్ళ జీవితాలలో ఆమె అత్మవిశ్వాసాన్ని నింపింది?\",\n" +
                 "                    \"Options\": {\n" +
                 "                      \"Option\": [\n" +
                 "                        {\n" +
                 "                          \"-id\": \"1\",\n" +
-                "                          \"#text\": \"?????????\"\n" +
+                "                          \"#text\": \"పేదవాళ్ళు\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"2\",\n" +
-                "                          \"#text\": \"??????\"\n" +
+                "                          \"#text\": \"రోగులు\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"3\",\n" +
-                "                          \"#text\": \"??????????????? ??????????\"\n" +
+                "                          \"#text\": \"ప్రత్యేకావసరాలు ఉన్నవాళ్ళు\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"4\",\n" +
-                "                          \"#text\": \"????????? ??????????\"\n" +
+                "                          \"#text\": \"జీవనాధారం లేనివాళ్ళు\"\n" +
                 "                        }\n" +
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"-id\": \"3\",\n" +
@@ -1487,29 +1739,52 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                  },\n" +
                 "                  {\n" +
                 "                    \"-Name\": \"Telugu\",\n" +
-                "                    \"QuestionText\": \"?????? ? ? ?????? ?????????????\",\n" +
+                "                    \"QuestionText\": \"హెలెన్ ఏ ఏ దేశాలు పర్యటించింది?\",\n" +
                 "                    \"Options\": {\n" +
                 "                      \"Option\": [\n" +
                 "                        {\n" +
                 "                          \"-id\": \"1\",\n" +
-                "                          \"#text\": \"????, ?????,????????\"\n" +
+                "                          \"#text\": \"ఇటలి, రష్యా,ఫ్రాన్స్\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"2\",\n" +
-                "                          \"#text\": \"?????????, ???????, ???????\"\n" +
+                "                          \"#text\": \"ఇంగ్లాండ్, ఆఫ్రికా, అమెరికా\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"3\",\n" +
-                "                          \"#text\": \"?????, ??????, ????\"\n" +
+                "                          \"#text\": \"జపాన్, కొరియా, చైనా\"\n" +
                 "                        },\n" +
                 "                        {\n" +
                 "                          \"-id\": \"4\",\n" +
-                "                          \"#text\": \"???????????, ???????????, ???????\"\n" +
+                "                          \"#text\": \"ఆస్ట్రేలియా, న్యూజిలాండ్, మలేషియా\"\n" +
                 "                        }\n" +
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"-id\": \"4\",\n" +
@@ -1600,7 +1875,30 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              },\n" +
                 "              {\n" +
                 "                \"-id\": \"5\",\n" +
@@ -1690,7 +1988,30 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "                      ]\n" +
                 "                    }\n" +
                 "                  }\n" +
-                "                ]\n" +
+                "                ],\n" +
+                "                \"Explanation\": {\n" +
+                "                  \"Option\": [\n" +
+                "                    {\n" +
+                "                      \"-id\": \"1\",\n" +
+                "                      \"#text\": \"Why did you answer Chattishghar??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"2\",\n" +
+                "                      \"#text\": \"You selected Jharkhand??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"3\",\n" +
+                "                      \"#text\": \"Why only Telangana??\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                      \"-id\": \"4\",\n" +
+                "                      \"#text\": \"You correctly selected Uttarakhand!\"\n" +
+                "                    }\n" +
+                "                  ]\n" +
+                "                },\n" +
+                "                \"ReferenceURL\": \"\n" +
+                "              https://www.google.com\n" +
+                "          \"\n" +
                 "              }\n" +
                 "            ]\n" +
                 "          }\n" +
@@ -1716,16 +2037,14 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "          {\n" +
                 "            \"-Name\": \"English\",\n" +
                 "            \"PassageText\": \"\n" +
-                "            Helen is a good girl. She feels pity by seeing poor. She loves nature. She worked for poor people. She visited England, America, Africa and then India.\n" +
-                "            \"\n" +
+                "          Helen is a good girl. She feels pity by seeing poor. She loves nature. She worked for poor people. She visited England, America, Africa and then India. \n" +
+                "        \"\n" +
                 "          },\n" +
                 "          {\n" +
                 "            \"-Name\": \"Telugu\",\n" +
                 "            \"PassageText\": \"\n" +
-                "            ?????? ????? ?????? ??????????.???????, ?????????? ??????????? ??? ???? ???????????.???????? ????? ????? ????? ?????????????.  ?????? ???????? ????? ????? ???? ??? ???????? ????????? ????????\n" +
-                "            ???????. ????? ???????? ??? ?????? ??????? ?????, ?? ??????? ????????? ???????????. ??????? ????? ????????? ???????? ?????????? ?????????? ?????? ????? ????? ??????????? ?????? ????? ??. ?????????? ??????,\n" +
-                "            '??????????????? ???? ???????? ????? ??????? ???????????????? ????????.? ????????? ?????????, ???????, ?????? ?????? ?????????? ??????????? ???? ????????. ??? ??????, ???????? ??????? ????????????????.\n" +
-                "            \"\n" +
+                "          హెలెన్ హృదయం కరుణరస భరితమయినది.దీనులను, దుఃఖితులను తలచుకుంటేనే ఆమె మనసు కరిగిపోయేది.పృకృతిలో ప్రతి అణువు ఆమెని పరవశింపచేసేవి.  మామూలు మనుషులకు కళ్ళు రెండే కాని ఆమె శరీరమంతా స్పర్శరూప నేత్రాలు ఉన్నాయి. ప్రతి స్పర్శకు ఆమె మనసారా అనుభూతి పొంది, తన భావాలను అనర్గళంగా ప్రకటించేది. తనలాంటి వాళ్ళ జీవితాలలో వెలుగులు నింపేందుకు జీవితాన్ని అంకితం చేసిన ఉన్నత వ్యక్తిత్వం హెలెన్ కెలర్ ది. ప్రపంచమంతా తిరిగి, 'ప్రత్యేకావసరాలూ ఉన్న పిల్లలను కలిసి వాళ్ళలో అత్మవిశ్వాసాన్ని నింపింది.ఈ నేపధ్యంలో ఇంగ్లాండ్, అమెరికా, ఆఫ్రిక దేశాలు పర్యటిస్తూ భరతదేశానికి కూడా వచ్చింది. ఆమె జీవితం, సాహిత్యం అందరికి ఆదర్శప్రాయమైనాయి.\n" +
+                "        \"\n" +
                 "          }\n" +
                 "        ]\n" +
                 "      }\n" +
@@ -1827,14 +2146,14 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
         try{
-            String startTime = QuestionPaper.getString("StartTime");
+            startTime = QuestionPaper.getString("StartTime");
             Log.e("Start Time ",startTime);
         }catch(JSONException en){
             Log.e("SaveThisQuestion",en.toString());
         }
 
         try{
-            String examDuration = QuestionPaper.getString("ExamDuration");
+            examDuration = QuestionPaper.getString("ExamDuration");
             Log.e("Duration",examDuration);
         }catch(JSONException en){
             Log.e("SaveThisQuestion",en.toString());
@@ -1843,7 +2162,14 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
         try{
             String instruction = QuestionPaper.getString("Instructions");
-            Log.e("Instruction",instruction);
+            Log.e("Instruction", instruction);
+
+            instruction+="Business Standard Private Ltd allows you to access its websites (www.business-standard.com & www.businessstandard.com, www.smartinvestor.in, www.bshindi.com and www.bsmotoring,com) and all the content in them on certain terms and conditions specified below. By accessing or subscribing to any part of these sites, you are explicitly agreeing to the terms and conditions below.\n" +
+                    "\n" +
+                    "These terms and conditions were updated as on December 1, 2003, and Business Standard Private Ltd reserves all rights to change, modify or alter these terms and conditions at any point of time with or without notifying existing users and subscribers. If you do not agree to the new terms and conditions you should not use the business-standard.com and other associated sites mentioned above. Paid users will be refunded the unexpired portions of their subscriptions on a pro rata basis if they send us an email within 72 hours of changes made in the terms and conditions.";
+            instruction+=instruction;
+            instructions.setText(instruction);
+            termsandconditionsnext.setEnabled(true);
         }catch(JSONException en){
             Log.e("SaveThisQuestion",en.toString());
         }
@@ -2056,7 +2382,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
     public void getSecQuestionAndRefresh(int sectionid){
 
         currentSection=sectionid;
-        Log.e("HERE",positionSec[currentSection]+"");
+        Log.e("HEREGETSEC",positionSec[currentSection]+"");
         changeQuestion(positionSec[currentSection]);
 
     }
