@@ -1,0 +1,926 @@
+﻿{
+  "ExamQuestionPaper": {
+    "ExamName": "Telangana General Knowledge",
+    "ExamId": "000001",
+    "MaximumMarks": "10",
+    "StartDate": "8/18/2015",
+    "EndDate": "8/18/2015",
+    "StartTime": "15-00",
+    "ExamDuration": "00-30",
+    "Instructions": "some sequence of instructions",
+    "StudentImage": "preet.jpg",
+    "Sections": {
+      "Section": [
+        {
+          "-id": "1",
+          "-Name": "About Telangana",
+          "SectionQuestions": {
+            "Question": [
+              {
+                "-id": "1",
+                "-CorrectAnswer": "3",
+                "-QuestionMarks": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": "Which state is formed recently",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "Chattishghar"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "Jharkhand"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "Telangana"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "Uttarakhand"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": "భారతదేశంలో నూతనంగా ఏర్పడిన రాష్ట్రం ఏది?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "చత్తీస్ ఘడ్"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "జార్ఖండ్"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "తెలంగాణ"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "ఉత్తరాఖండ్"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+            https://www.google.com
+        "
+              },
+              {
+                "-id": "2",
+                "-CorrectAnswer": "2",
+                "-QuestionMarks": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": "Telangana formation day?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "June 1, 2014"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "June 2, 2014"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "June 3, 2014"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "June 4, 2014"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": "తెలంగాణ రాష్ట్రావతరణ దినోత్సవం ఎప్పుడు?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "జూన్ 1, 2014"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "జూన్ 2, 2014"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "జూన్ 3, 2014"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "జూన్ 4, 2014"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              },
+              {
+                "-id": "3",
+                "-CorrectAnswer": "1",
+                "-QuestionMarks": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": "Telangana captital",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "Hyderabad"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "Bangalore"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "Vijayawada"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "Chennai"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": "తెలంగాణ రాజధాని ఏది?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "హైదరాబాద్"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "బెంగుళూరు"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "విజయవాడ"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "చెన్నై"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              },
+              {
+                "-id": "4",
+                "-CorrectAnswer": "2",
+                "-QuestionMarks": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": "Telangana first chief minister?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "Devendra Fadnavis"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "Chandra Sekhar Rao"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "Sivaraj Chowhan"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "Raman Singh"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": "తెలంగాణ రాష్ట్ర మొదటి ముఖ్యమంత్రి ఎవరు?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "దేవేంద్ర ఫడ్నవిస్"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "కే.చంద్రశేఖర రావ్"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "శివరాజ్ చౌహాన్"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "రమణ్ సింఘ్"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              },
+              {
+                "-id": "5",
+                "-CorrectAnswer": "2",
+                "-QuestionMarks": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": "Which is border state of Telangana?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "Bihar"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "Maharastra"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "Kerala"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "Tamilnadu"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": "ఈ క్రింది వానిలో ఏది తెలంగాణ సరిహద్దు రాష్ట్రాలలో ఒకటి?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "బీహార్"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "మహారాష్ట్ర"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "కేరళ"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "తమిళనాడు"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              }
+            ]
+          }
+        },
+        {
+          "-id": "2",
+          "-Name": "About Telugu",
+          "SectionQuestions": {
+            "Question": [
+              {
+                "-id": "1",
+                "-CorrectAnswer": "2",
+                "-QuestionMarks": "1",
+                "-PassageNo": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": "How is Helen?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "cruel"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "good"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "innocent"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "mad"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": "హెలెన్ ఎటువంటిది?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "కౄరమైనది"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "కరుణరస భరితమైన హృదయం కలిగినది"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "అమాయకమైనది"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "మతిస్థిమితం లేనిది"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              },
+              {
+                "-id": "2",
+                "-CorrectAnswer": "1",
+                "-QuestionMarks": "1",
+                "-PassageNo": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": "Helen helped whom?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "poor"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "patients"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "disabled"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "unemployed"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": "హెలెన్ ఎటువంటివాళ్ళ జీవితాలలో ఆమె అత్మవిశ్వాసాన్ని నింపింది?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "పేదవాళ్ళు"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "రోగులు"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "ప్రత్యేకావసరాలు ఉన్నవాళ్ళు"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "జీవనాధారం లేనివాళ్ళు"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              },
+              {
+                "-id": "3",
+                "-CorrectAnswer": "2",
+                "-QuestionMarks": "1",
+                "-PassageNo": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": "Helen visiting following countries...",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "Italy, Russia, France"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "England, Africa, America"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "Japan, Koria, China"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "Australia, Nuzeland, Malaysia"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": "హెలెన్ ఏ ఏ దేశాలు పర్యటించింది?",
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "ఇటలి, రష్యా,ఫ్రాన్స్"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "ఇంగ్లాండ్, ఆఫ్రికా, అమెరికా"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "జపాన్, కొరియా, చైనా"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "ఆస్ట్రేలియా, న్యూజిలాండ్, మలేషియా"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              },
+              {
+                "-id": "4",
+                "-CorrectAnswer": "3",
+                "-QuestionMarks": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": { "p": "Which triangle is right angle triangle?" },
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "p": {
+                            "-align": "center",
+                            "-style": "text-align:center",
+                            "span": {
+                              "-style": "font-size:10.0pt",
+                              "img": {
+                                "-width": "143",
+                                "-height": "136",
+                                "-src": "1.gif",
+                                "-style": "vertical-align: middle"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "-id": "2",
+                          "p": {
+                            "-align": "center",
+                            "-style": "text-align:center",
+                            "span": {
+                              "-style": "font-size:10.0pt",
+                              "img": {
+                                "-width": "143",
+                                "-height": "136",
+                                "-src": "2.gif",
+                                "-style": "vertical-align: middle"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "-id": "3",
+                          "p": {
+                            "-align": "center",
+                            "-style": "text-align:center",
+                            "span": {
+                              "-style": "font-size:10.0pt",
+                              "img": {
+                                "-width": "143",
+                                "-height": "136",
+                                "-src": "3.gif",
+                                "-style": "vertical-align: middle"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "-id": "4",
+                          "p": {
+                            "-align": "center",
+                            "-style": "text-align:center",
+                            "span": {
+                              "-style": "font-size:10.0pt",
+                              "img": {
+                                "-width": "143",
+                                "-height": "136",
+                                "-src": "4.gif",
+                                "-style": "vertical-align: middle"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "Options": {
+                      "Option": [
+                        { "-id": "1" },
+                        { "-id": "2" },
+                        { "-id": "3" },
+                        { "-id": "4" }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              },
+              {
+                "-id": "5",
+                "-CorrectAnswer": "3",
+                "-QuestionMarks": "1",
+                "-Type": "MCQ",
+                "Laungage": [
+                  {
+                    "-Name": "English",
+                    "QuestionText": {
+                      "p": [
+                        "Which pair of the following figures appears to be congruent (same size, same shape)?",
+                        {
+                          "-align": "center",
+                          "-style": "text-align:center",
+                          "span": {
+                            "-style": "font-size:10.0pt",
+                            "img": {
+                              "-width": "143",
+                              "-height": "136",
+                              "-src": "5.gif",
+                              "-style": "vertical-align: middle"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "aaaa"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "bbbb"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "cccc"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "dddd"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "-Name": "Telugu",
+                    "QuestionText": {
+                      "p": [
+                        "Which pair of the following figures appears to be congruent (same size, same shape)?",
+                        {
+                          "-align": "center",
+                          "-style": "text-align:center",
+                          "span": {
+                            "-style": "font-size:10.0pt",
+                            "img": {
+                              "-width": "143",
+                              "-height": "136",
+                              "-src": "5.gif",
+                              "-style": "vertical-align: middle"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "Options": {
+                      "Option": [
+                        {
+                          "-id": "1",
+                          "#text": "aaaa"
+                        },
+                        {
+                          "-id": "2",
+                          "#text": "bbbb"
+                        },
+                        {
+                          "-id": "3",
+                          "#text": "cccc"
+                        },
+                        {
+                          "-id": "4",
+                          "#text": "dddd"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Explanation": {
+                  "Option": [
+                    {
+                      "-id": "1",
+                      "#text": "Why did you answer Chattishghar??"
+                    },
+                    {
+                      "-id": "2",
+                      "#text": "You selected Jharkhand??"
+                    },
+                    {
+                      "-id": "3",
+                      "#text": "Why only Telangana??"
+                    },
+                    {
+                      "-id": "4",
+                      "#text": "You correctly selected Uttarakhand!"
+                    }
+                  ]
+                },
+                "ReferenceURL": "
+              https://www.google.com
+          "
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Images": {
+      "Image": [
+        {
+          "-id": "1",
+          "-Type": "Image"
+        },
+        {
+          "-id": "2",
+          "-Type": "Image"
+        }
+      ]
+    },
+    "Passages": {
+      "Passage": {
+        "-id": "1",
+        "Laungage": [
+          {
+            "-Name": "English",
+            "PassageText": "
+          Helen is a good girl. She feels pity by seeing poor. She loves nature. She worked for poor people. She visited England, America, Africa and then India. 
+        "
+          },
+          {
+            "-Name": "Telugu",
+            "PassageText": "
+          హెలెన్ హృదయం కరుణరస భరితమయినది.దీనులను, దుఃఖితులను తలచుకుంటేనే ఆమె మనసు కరిగిపోయేది.పృకృతిలో ప్రతి అణువు ఆమెని పరవశింపచేసేవి.  మామూలు మనుషులకు కళ్ళు రెండే కాని ఆమె శరీరమంతా స్పర్శరూప నేత్రాలు ఉన్నాయి. ప్రతి స్పర్శకు ఆమె మనసారా అనుభూతి పొంది, తన భావాలను అనర్గళంగా ప్రకటించేది. తనలాంటి వాళ్ళ జీవితాలలో వెలుగులు నింపేందుకు జీవితాన్ని అంకితం చేసిన ఉన్నత వ్యక్తిత్వం హెలెన్ కెలర్ ది. ప్రపంచమంతా తిరిగి, 'ప్రత్యేకావసరాలూ ఉన్న పిల్లలను కలిసి వాళ్ళలో అత్మవిశ్వాసాన్ని నింపింది.ఈ నేపధ్యంలో ఇంగ్లాండ్, అమెరికా, ఆఫ్రిక దేశాలు పర్యటిస్తూ భరతదేశానికి కూడా వచ్చింది. ఆమె జీవితం, సాహిత్యం అందరికి ఆదర్శప్రాయమైనాయి.
+        "
+          }
+        ]
+      }
+    }
+  }
+}

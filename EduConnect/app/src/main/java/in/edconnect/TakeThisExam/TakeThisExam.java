@@ -15,6 +15,7 @@ import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Parcelable;
@@ -47,12 +48,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -66,6 +75,7 @@ import in.edconnect.Database.PassageDBHelper;
 import in.edconnect.Database.QuestionDBHelper;
 import in.edconnect.HomePageActivity;
 import in.edconnect.ImageGetter.URLImageParser;
+import in.edconnect.JsonRequest.NewCustomJsonRequest;
 import in.edconnect.R;
 import in.edconnect.SelectableTextView.SelectableTextView;
 import in.edconnect.TextView.CustomTextView;
@@ -74,7 +84,7 @@ import in.edconnect.TouchImageView.TouchImageView;
 /**
  * Created by admin on 7/19/2015.
  */
-public class TakeThisExam extends Activity implements View.OnTouchListener {
+public class TakeThisExam extends Activity  {
 
     ArrayList<Question> questionArrayList;
     TextView question,termsandconditions,instructions;
@@ -129,7 +139,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         protractor = (Button)findViewById(R.id.protractor);
         highlight = (Button)findViewById(R.id.highlight);
         scale = (Button)findViewById(R.id.scale);
-        protractorImage = (ImageView)findViewById(R.id.protractorimage);
+        //protractorImage = (ImageView)findViewById(R.id.protractorimage);
         match = (LinearLayout)findViewById(R.id.match);
         match1=(EditText)findViewById(R.id.answer1);
         match2=(EditText)findViewById(R.id.answer2);
@@ -231,7 +241,47 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         mMainImg = (ImageView) findViewById(R.id.protractorimage);
         mRotateImg = (ImageView) findViewById(R.id.drager);
         // mRotateImg.setOnTouchListener(this);
-        mMainImg.setOnTouchListener(this);
+        mMainImg.setOnTouchListener(new View.OnTouchListener() {
+
+
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int eId = event.getAction();
+                mRotateImg.setVisibility(ImageView.VISIBLE);
+                if (v == mMainImg) {
+                    switch (eId) {
+                        case MotionEvent.ACTION_MOVE:
+                            drag(v, event);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            mRotateImg.setOnTouchListener(this);
+                            break;
+                        default:
+                    }
+                }
+                if (v == mRotateImg) {
+                    switch (eId) {
+                        case MotionEvent.ACTION_MOVE:
+                            r = r + 2;
+                            rotate(v, event);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            mRotateImg.setVisibility(ImageView.INVISIBLE);
+                            break;
+                        default:
+                    }
+                    if (v != mMainImg && v != mRotateImg)
+                        mRotateImg.setVisibility(ImageView.INVISIBLE);
+                }
+                return true;
+            }
+
+
+
+
+
+        });
         ///////////
 
 
@@ -248,7 +298,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             matrix.reset();
         }
 
-        protractorImage.setVisibility(View.INVISIBLE);
+        mMainImg.setVisibility(View.GONE);
         highlightText= PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         highlightText.edit().clear().commit();
 
@@ -273,7 +323,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 dbHelper=new QuestionDBHelper(this);
             }
             saveThisQuestionPaper();
-            makeThisSectionsVisible();
+
 
             //if reference bar is not empty and if it is not already added then add it to array list
             questionArrayList.add(new Question(1,0,Html.fromHtml("M\'1. ?????????? ??????? ??????? ???????? ????'").toString(),"Gujarat","Delhi","UP","Kerala","This is reference paragraph for you . You have to answer the questions after reading this paragraph",0));
@@ -305,7 +355,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
         positionSec[currentSection]=1;
-        changeQuestion(positionSec[currentSection]);
+        //changeQuestion(positionSec[currentSection]);
 
         for(int k=0;k<100;k++){
             answers.add(null);
@@ -388,10 +438,10 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
 
                     Log.e("NO OF QUESTION",dbHelper.getNoQuestionSectionId(currentSection)+"");
-                    if(positionSec[currentSection]+1<dbHelper.getNoQuestionSectionId(currentSection)/2){
+                    if(positionSec[currentSection]<dbHelper.getNoQuestionSectionId(currentSection)/2){
                         positionSec[currentSection]++;
                         changeQuestion(positionSec[currentSection]);
-                    }else if(positionSec[currentSection]+1 == dbHelper.getNoQuestionSectionId(currentSection)/2){
+                    }else if(positionSec[currentSection] == dbHelper.getNoQuestionSectionId(currentSection)/2){
                           //showMeTheDialog();
 
 
@@ -426,10 +476,10 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                         Log.e("MAnswers: "," 1:" + match1.getText()+" 2:"+match2.getText()+" 3:"+match3.getText()+" 4:"+match4.getText()+" 5:"+match5.getText());
                         answers.add(position, new Answers("1995"));
                         answers.get(position).setMatch(match1.getText().toString(),match2.getText().toString(),match3.getText().toString(),match4.getText().toString(),match5.getText().toString());
-                        if(positionSec[currentSection]+1<dbHelper.getNoQuestionSectionId(currentSection)/2){
+                        if(positionSec[currentSection]<dbHelper.getNoQuestionSectionId(currentSection)/2){
                             positionSec[currentSection]++;
                             changeQuestion(positionSec[currentSection]);
-                        }else if(positionSec[currentSection]+1 == dbHelper.getNoQuestionSectionId(currentSection)/2){
+                        }else if(positionSec[currentSection] == dbHelper.getNoQuestionSectionId(currentSection)/2){
 
 
 
@@ -451,7 +501,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
             public void onClick(View view) {
                 answers.add(Integer.parseInt(currentSection+""+positionSec[currentSection]+""), new Answers("0",sectionid,positionSec[currentSection]));
                 Log.e("NO OF QUESTIONS",dbHelper.getNoQuestionSectionId(currentSection)+"");
-                if (positionSec[currentSection] + 1 < dbHelper.getNoQuestionSectionId(currentSection)/2) {
+                if (positionSec[currentSection]  < dbHelper.getNoQuestionSectionId(currentSection)/2) {
                     positionSec[currentSection]++;
                     changeQuestion(positionSec[currentSection]);
                 }else{
@@ -488,9 +538,10 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (positionSec[currentSection] > 0) {
+                if (positionSec[currentSection] > 1) {
                     positionSec[currentSection]--;
                     changeQuestion(positionSec[currentSection]);
+                    Log.e("InPre",positionSec[currentSection]+"");
                 }
             }
         });
@@ -525,14 +576,14 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         protractor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (protractorImage.getVisibility() == View.INVISIBLE) {
+                if (mMainImg.getVisibility() == View.GONE) {
 
-                    protractorImage.setVisibility(View.VISIBLE);
+                    mMainImg.setVisibility(View.VISIBLE);
                 } else {
 
-                    protractorImage.setVisibility(View.INVISIBLE);
+                    mMainImg.setVisibility(View.GONE);
                     try{
-                        mRotateImg.setVisibility(View.INVISIBLE);
+                        mRotateImg.setVisibility(View.GONE);
                     }catch(Exception en){
 
                     }
@@ -1051,37 +1102,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
     /////////////////////              Rotation            ///////////////////////
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        int eId = event.getAction();
-        mRotateImg.setVisibility(ImageView.VISIBLE);
-        if (v == mMainImg) {
-            switch (eId) {
-                case MotionEvent.ACTION_MOVE:
-                    drag(v, event);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    mRotateImg.setOnTouchListener(this);
-                    break;
-                default:
-            }
-        }
-        if (v == mRotateImg) {
-            switch (eId) {
-                case MotionEvent.ACTION_MOVE:
-                    r = r + 2;
-                    rotate(v, event);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    mRotateImg.setVisibility(ImageView.INVISIBLE);
-                    break;
-                default:
-            }
-            if (v != mMainImg && v != mRotateImg)
-                mRotateImg.setVisibility(ImageView.INVISIBLE);
-        }
-        return true;
-    }
+
 
     private void rotate(View v, MotionEvent event) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
@@ -1116,7 +1137,75 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
 
     public void saveThisQuestionPaper(){
         ///// Send volley request and call savethisquestionpaperafterresponse after response
-        saveThisQuestionPaperAfterResponse("response in string format");
+        String url="http://edconnect.in/home/exampapers/questionpaper.txt";
+        /*NewCustomJsonRequest jsonRequest = new NewCustomJsonRequest(Request.Method.GET, url, null,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("GettingRes",response);
+                        saveThisQuestionPaperAfterResponse(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Errror","Getting question paper!");
+            }
+        });
+
+        Volley.newRequestQueue(this).add(jsonRequest);*/
+
+        class RetrieveFeedTask extends AsyncTask<String, Void, String> {
+
+            private Exception exception;
+            StringBuilder str=new StringBuilder("");
+            String temp="";
+            String url = "http://edconnect.in/home/exampapers/questionpaper.txt";
+
+            protected String doInBackground(String... urls) {
+                Log.e("Here","123");
+                try {
+                    // Create a URL for the desired page
+                    URL finalurl = new URL(url);
+
+                    // Read all the text returned by the server
+                    BufferedReader in = new BufferedReader(new InputStreamReader(finalurl.openStream()));
+                    int i=0;
+                    while ((( temp=in.readLine()) != null) && i!=16) {
+                        // str is one line of text; readLine() strips the newline character(s)
+                        if(temp==null){
+                            i++;
+                        }
+                        Log.e("Iteration", "1" + temp);
+                        str.append(temp);
+                    }
+                    in.close();
+                    Log.e("BefRes",str.toString())
+;                } catch (MalformedURLException e) {
+                    Log.e("Errror",e.toString());
+                } catch (IOException e) {
+                    Log.e("Errror",e.toString());
+                }
+                Log.e("BefRes",str.toString());
+                return str.toString();
+            }
+
+            protected void onPostExecute(String str) {
+                // TODO: check this.exception
+                // TODO: do something with the feed
+                Log.e("Response", str);
+                if(str.length()>15) {
+                    saveThisQuestionPaperAfterResponse(str);
+                }else{
+                    Toast.makeText(getApplicationContext(),"Make sure you have working internet connection!",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(TakeThisExam.this,HomePageActivity.class));
+                    finish();
+                }
+            }
+        }
+        new RetrieveFeedTask().execute("Doesn't matter!!");
+
+
+
     }
 
 
@@ -1125,7 +1214,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         JSONObject questionPaper=null;
         JSONObject QuestionPaper=null;
 
-        response = "{\n" +
+        /*response = "{\n" +
                 "  \"ExamQuestionPaper\": {\n" +
                 "    \"ExamName\": \"Telangana General Knowledge\",\n" +
                 "    \"ExamId\": \"000001\",\n" +
@@ -2051,7 +2140,7 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                 "    }\n" +
                 "  }\n" +
                 "}";
-
+*/
 
         try {
             questionPaper = new JSONObject(response);
@@ -2221,6 +2310,18 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
                             Log.e("ErrorIn","NO passageNo");
                             passageNo = "-1";
                         }
+
+                        /////////////// For hightlighting //////////////////////
+                        // passageid can not be 0 //
+
+                        if(passageNo.equals("-1")) {
+                            highlightTextArrayList.add(new HighlightText(0));
+                        }else{
+                            highlightTextArrayList.add(new HighlightText(Integer.parseInt(passageNo)));
+                        }
+
+                        ///////////////////////////////////////////////////////
+
                         questionMarks = question.getString("-QuestionMarks");
                         questionType = question.getString("-Type");
                         Log.e("InfoQuestion", questionId + " " + questionCorrectAnswer + " " + questionMarks + " " + questionType);
@@ -2326,6 +2427,9 @@ public class TakeThisExam extends Activity implements View.OnTouchListener {
         }catch(JSONException en){
             Log.e("SaveThisQuestion",en.toString());
         }
+
+        changeQuestion(positionSec[currentSection]);
+        makeThisSectionsVisible();
 
 
     }

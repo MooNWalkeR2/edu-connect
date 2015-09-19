@@ -41,7 +41,7 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="3000dp"
+            android:layout_height="10000dp"
             android:layout_margin="5dp"
             android:id="@+id/answerlist"></ListView>
 

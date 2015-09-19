@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -68,7 +69,7 @@ public class CheckThisExam extends Activity{
             i++;
         }
 
-        percentage=((float)score / (float)(score+totalMarks))*100;
+        percentage=((float)score / (float)(totalMarks))*100;
         totalmarks.setText("Total Marks :    "+totalMarks);
         totalscore.setText("Marks Scored :   "+score);
         totalpercentage.setText("Percentage Scored :    "+percentage+"%");
@@ -76,5 +77,12 @@ public class CheckThisExam extends Activity{
 
         arrayAdapter=new MySimpleArrayAdapter(this,questions,answersSend);
         answerListView.setAdapter(arrayAdapter);
+    }
+
+
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(CheckThisExam.this,HomePageActivity.class));
+        finish();
     }
 }
