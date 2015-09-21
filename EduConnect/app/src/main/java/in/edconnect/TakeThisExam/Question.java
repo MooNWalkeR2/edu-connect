@@ -14,6 +14,7 @@ public class Question {
     int matchFollowing=0;
     String row11,row12,row13,row14,row15,row21,row22,row23,row24,row25;
     public int groupID;
+    public String explanation1="",explanation2="",explanation3="",explanation4="",referenceUrl="";
 
     public Question(){}
 

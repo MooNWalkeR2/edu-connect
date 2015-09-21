@@ -2292,6 +2292,13 @@ public class TakeThisExam extends Activity  {
                 JSONObject sectionQuestions = section.getJSONObject("SectionQuestions");
                 JSONArray Questions = sectionQuestions.getJSONArray("Question");
 
+                String explanationOption1 = "",explanationOption2 = "",explanationOption3 = "",explanationOption4 = "";
+                String referenceUrl = "";
+
+
+
+
+
                 //Loop for each question
                 for(int j=0;j<Questions.length();j++){
 
@@ -2303,6 +2310,49 @@ public class TakeThisExam extends Activity  {
                         JSONObject question = Questions.getJSONObject(j);
                         questionId = question.getString("-id");
                         questionCorrectAnswer = question.getString("-CorrectAnswer");
+
+
+
+                        //////// Explanation //////
+
+                        referenceUrl=question.getString("ReferenceURL");
+                        try{
+                            JSONObject explanations = question.getJSONObject("Explanation");
+                            JSONArray explanationOptions = explanations.getJSONArray("Option");
+
+                            for(int m=0;m<explanationOptions.length();m++){
+                                JSONObject explanationOption = explanationOptions.getJSONObject(m);
+                                switch(m){
+                                    case 0:
+                                        explanationOption1=explanationOption.getString("#text");
+                                        break;
+
+                                    case 1:
+                                        explanationOption2=explanationOption.getString("#text");
+                                        break;
+
+                                    case 2:
+                                        explanationOption3=explanationOption.getString("#text");
+                                        break;
+
+                                    case 3:
+                                        explanationOption4=explanationOption.getString("#text");
+                                        break;
+                                }
+                            }
+
+                        }catch(JSONException en){
+                            Log.e("ErrorIn","Explanation "+en.toString());
+                        }
+
+
+
+
+                        /////////////////////////////
+
+
+
+
                         try {
                             passageNo = question.getString("-PassageNo");
                             Log.e("PassageNo","Successfull"+passageNo);
@@ -2418,7 +2468,7 @@ public class TakeThisExam extends Activity  {
                             Log.e("Error At",en.toString());
                         }
 
-                        dbHelper.insertQuestion(questionId,secId,secName,questionCorrectAnswer,questionMarks,questionType,languageName,languageQuetionText,optionText1,optionText2,optionText3,optionText4,passageNo);
+                        dbHelper.insertQuestion(questionId,secId,secName,questionCorrectAnswer,questionMarks,questionType,languageName,languageQuetionText,optionText1,optionText2,optionText3,optionText4,passageNo,explanationOption1,explanationOption2,explanationOption3,explanationOption4,referenceUrl);
                     }
 
                 }

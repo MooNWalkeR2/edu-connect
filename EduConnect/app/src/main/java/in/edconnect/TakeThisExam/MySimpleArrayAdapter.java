@@ -1,14 +1,17 @@
 package in.edconnect.TakeThisExam;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,7 +55,7 @@ public class MySimpleArrayAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -133,6 +136,15 @@ public class MySimpleArrayAdapter extends BaseAdapter {
         RadioButton option2=(RadioButton)rowView.findViewById(R.id.option2);
         RadioButton option3=(RadioButton)rowView.findViewById(R.id.option3);
         RadioButton option4=(RadioButton)rowView.findViewById(R.id.option4);
+        Button explanation1=(Button)rowView.findViewById(R.id.explanation1);
+        Button explanation2=(Button)rowView.findViewById(R.id.explanation2);
+        Button explanation3=(Button)rowView.findViewById(R.id.explanation3);
+        Button explanation4=(Button)rowView.findViewById(R.id.explanation4);
+        final TextView explanationinfo1=(TextView)rowView.findViewById(R.id.explanationinfo1);
+        final TextView explanationinfo2=(TextView)rowView.findViewById(R.id.explanationinfo2);
+        final TextView explanationinfo3=(TextView)rowView.findViewById(R.id.explanationinfo3);
+        final TextView explanationinfo4=(TextView)rowView.findViewById(R.id.explanationinfo4);
+        Button referenceUrl = (Button)rowView.findViewById(R.id.referenceurl);
         TextView answerStatus = (TextView)rowView.findViewById(R.id.answerstatus);
 
         question.setText(values.get(position).question);
@@ -141,6 +153,75 @@ public class MySimpleArrayAdapter extends BaseAdapter {
         option3.setText(values.get(position).option3);
         option4.setText(values.get(position).option4);
 
+
+        explanation1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (explanationinfo1.getVisibility() == View.GONE) {
+                    explanationinfo1.setText(values.get(position).explanation1);
+                    explanationinfo1.setVisibility(View.VISIBLE);
+                } else {
+                    explanationinfo1.setText("");
+                    explanationinfo1.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+        explanation2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(explanationinfo2.getVisibility()==View.GONE){
+                    explanationinfo2.setText(values.get(position).explanation2);
+                    explanationinfo2.setVisibility(View.VISIBLE);
+                }else{
+                    explanationinfo2.setText("");
+                    explanationinfo2.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+        explanation3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(explanationinfo3.getVisibility()==View.GONE){
+                    explanationinfo3.setText(values.get(position).explanation3);
+                    explanationinfo3.setVisibility(View.VISIBLE);
+                }else{
+                    explanationinfo3.setText("");
+                    explanationinfo3.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+        explanation4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(explanationinfo4.getVisibility()==View.GONE){
+                    explanationinfo4.setText(values.get(position).explanation4);
+                    explanationinfo4.setVisibility(View.VISIBLE);
+                }else{
+                    explanationinfo4.setText("");
+                    explanationinfo4.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        referenceUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+
+                    Uri uri = Uri.parse(values.get(position).referenceUrl.trim()); // missing 'http://' will cause crashed
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    context.startActivity(intent);
+                }catch (Exception en){
+                    Toast.makeText(context,"Problem starting web browser!"+en.toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         if(values.get(position).correctAnswer.equals(answers.get(position).ans)){
             answerStatus.setText("You answered it correctly!");

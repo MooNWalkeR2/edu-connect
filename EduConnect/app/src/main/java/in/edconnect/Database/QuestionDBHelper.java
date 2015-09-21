@@ -32,17 +32,22 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
     public static final String OPTION_TWO="option2";
     public static final String OPTION_THREE="option3";
     public static final String OPTION_FOUR="option4";
+    public static final String OPTION_ONE_EX="explanation1";
+    public static final String OPTION_TWO_EX="explanation2";
+    public static final String OPTION_THREE_EX="explanation3";
+    public static final String OPTION_FOUR_EX="explanation4";
+    public static final String REFERENCE_URL="referenceurl";
     public static final String PASSAGE_NO="passageno";
 
 
     public QuestionDBHelper(Context context){
-        super(context, DATABASE_NAME , null , 2);
+        super(context, DATABASE_NAME , null , 3);
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table questions (uid integer primary key , id text , sectionid text , sectionname text , correctanswer text , questionmarks text ,type text , languagename text , languagetext text ,passageno text, option1 text , option2 text ,option3 text , option4 text) ");
+        db.execSQL("create table questions (uid integer primary key , id text , sectionid text , sectionname text , correctanswer text , questionmarks text ,type text , languagename text , languagetext text ,passageno text, option1 text , option2 text ,option3 text , option4 text , explanation1 text , explanation2 text , explanation3 text , explanation4 text , referenceurl text) ");
     }
 
     @Override
@@ -51,7 +56,7 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertQuestion(String id ,String sectionid , String sectionname,String correctAnswer , String questionMarks ,String type , String languageName , String languageText,String option1,String option2,String option3,String option4,String passageNo){
+    public boolean insertQuestion(String id ,String sectionid , String sectionname,String correctAnswer , String questionMarks ,String type , String languageName , String languageText,String option1,String option2,String option3,String option4,String passageNo,String explanation1,String explanation2,String explanation3,String explanation4,String referenceurl){
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -70,6 +75,11 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
             cv.put(OPTION_TWO,option2);
             cv.put(OPTION_THREE,option3);
             cv.put(OPTION_FOUR,option4);
+            cv.put(OPTION_ONE_EX,explanation1);
+            cv.put(OPTION_TWO_EX,explanation2);
+            cv.put(OPTION_THREE_EX,explanation3);
+            cv.put(OPTION_FOUR_EX,explanation4);
+            cv.put(REFERENCE_URL,referenceurl);
             cv.put(PASSAGE_NO,passageNo);
             db.insert(TABLE_NAME,null,cv);
             Log.e("INSERTED:","INTO DATABASE");
@@ -133,6 +143,11 @@ public class QuestionDBHelper  extends SQLiteOpenHelper {
             question.correctAnswer = cursor.getString(cursor.getColumnIndex(CORRECT_ANSWER));
             question.questionMarks = cursor.getString(cursor.getColumnIndex(QUESTION_MARKS));
             question.passageNo = cursor.getString(cursor.getColumnIndex(PASSAGE_NO));
+            question.explanation1=cursor.getString(cursor.getColumnIndex(OPTION_ONE_EX));
+            question.explanation2=cursor.getString(cursor.getColumnIndex(OPTION_TWO_EX));
+            question.explanation3=cursor.getString(cursor.getColumnIndex(OPTION_THREE_EX));
+            question.explanation4=cursor.getString(cursor.getColumnIndex(OPTION_FOUR_EX));
+            question.referenceUrl=cursor.getString(cursor.getColumnIndex(REFERENCE_URL));
         }catch(Exception en){
             Log.e("ErrorInCursor","GetThisLanguages");
         }
