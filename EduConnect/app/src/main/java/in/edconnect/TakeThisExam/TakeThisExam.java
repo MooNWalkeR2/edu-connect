@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
@@ -43,6 +44,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -119,6 +121,7 @@ public class TakeThisExam extends Activity  {
     boolean section[]=new boolean[7];
     PassageDBHelper passageDBHelper=null;
     String startTime="0",examDuration="0";
+    ScrollView scrollView;
 
     @Override
     public void onCreate(Bundle bundle){
@@ -160,6 +163,8 @@ public class TakeThisExam extends Activity  {
         instructionslayout.setVisibility(View.GONE);
         termsandconditionslayout.setVisibility(View.VISIBLE);
         termsandconditionsnext.setEnabled(false);
+
+        scrollView = (ScrollView)findViewById(R.id.scrollView);
 
 
 
@@ -240,9 +245,8 @@ public class TakeThisExam extends Activity  {
 
         mMainImg = (ImageView) findViewById(R.id.protractorimage);
         mRotateImg = (ImageView) findViewById(R.id.drager);
-        // mRotateImg.setOnTouchListener(this);
-        mMainImg.setOnTouchListener(new View.OnTouchListener() {
 
+        mMainImg.setOnTouchListener(new SurfaceView.OnTouchListener() {
 
 
             @Override
@@ -282,12 +286,12 @@ public class TakeThisExam extends Activity  {
 
 
         });
-        ///////////
+        ///////////////////////////////////////////////////////
 
 
 
 
-        if (imageOriginal == null) {
+       /* if (imageOriginal == null) {
             imageOriginal = BitmapFactory.decodeResource(getResources(), R.drawable.protractor);
         }
 
@@ -296,7 +300,7 @@ public class TakeThisExam extends Activity  {
         } else {
             // not needed, you can also post the matrix immediately to restore the old state
             matrix.reset();
-        }
+        }*/
 
         mMainImg.setVisibility(View.GONE);
         highlightText= PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -350,7 +354,7 @@ public class TakeThisExam extends Activity  {
 
         //////////  assign time taken from web services
 
-        countDownTimer= new MalibuCountDownTimer(100000,1000);
+        countDownTimer= new MalibuCountDownTimer(600000,1000);
         countDownTimer.start();
 
 
@@ -467,6 +471,7 @@ public class TakeThisExam extends Activity  {
                         if(all==true){
                             Intent intent = new Intent(TakeThisExam.this,CheckThisExam.class);
                             intent.putParcelableArrayListExtra("Answers",answers);
+                            countDownTimer.stop();
                             startActivity(intent);
                         }
                         Log.e("END","OF SECTION"+currentSection);
@@ -577,10 +582,8 @@ public class TakeThisExam extends Activity  {
             @Override
             public void onClick(View view) {
                 if (mMainImg.getVisibility() == View.GONE) {
-
                     mMainImg.setVisibility(View.VISIBLE);
                 } else {
-
                     mMainImg.setVisibility(View.GONE);
                     try{
                         mRotateImg.setVisibility(View.GONE);
@@ -619,42 +622,10 @@ public class TakeThisExam extends Activity  {
 
 
 
-        /*protractorImage.setOnTouchListener(new View.OnTouchListener() {
+
+       /* protractorImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
-
-                ///Rotation
-
-                if(rotationCon==1){
-
-
-                    switch (event.getAction()) {
-
-                        case MotionEvent.ACTION_DOWN:
-                            startAngle = getAngle(event.getX(), event.getY());
-                            break;
-
-                        case MotionEvent.ACTION_MOVE:
-                            double currentAngle = getAngle(event.getX(), event.getY());
-                            rotateDialer((float) (startAngle - currentAngle));
-                            startAngle = currentAngle;
-                            break;
-
-                        case MotionEvent.ACTION_UP:
-
-                            break;
-                    }
-                    return true;
-
-
-                }
-
-
-                ///////////////
-
-
-
 
                 final int X = (int) event.getRawX();
                 final int Y = (int) event.getRawY();
@@ -682,6 +653,7 @@ public class TakeThisExam extends Activity  {
                 return true;
             }
         });*/
+
 
 
 
@@ -817,7 +789,7 @@ public class TakeThisExam extends Activity  {
                 question.setBackground(d);
             }else {
                 URLImageParser p = new URLImageParser(question, this);
-                Spanned sp=Html.fromHtml(questionCurrent.question+"పర్యటించింది",p,null);
+                Spanned sp=Html.fromHtml(questionCurrent.question+"<img src='www.google.com/1.png'/>",p,null);
                 question.setText(sp);
             }
             if(checkForLink(questionCurrent.option1)){
@@ -1019,6 +991,7 @@ public class TakeThisExam extends Activity  {
                 //// Start Activity otherwise getSecQuestionAndRefresh /////////////
 
                 dbHelper.deleteAllData();
+
                 startActivity(new Intent(TakeThisExam.this, HomePageActivity.class));
                 finish();
             }
@@ -1057,6 +1030,10 @@ public class TakeThisExam extends Activity  {
             int minutes = (int) ((milliseconds / (1000*60)) % 60);
             int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
             timer.setText(hours + ":" + minutes + ":" + seconds);
+        }
+
+        public void stop(){
+            super.cancel();
         }
     }
 
@@ -1125,7 +1102,11 @@ public class TakeThisExam extends Activity  {
         mParams.topMargin =y-210;
         mMainImg.setLayoutParams(mParams);
         mRotateImg.setLayoutParams(mParams);
+
+
+
     }
+
 
 
 
@@ -2149,7 +2130,16 @@ public class TakeThisExam extends Activity  {
             Log.e("Parsing",e.toString());
         }
 
-        ///// Passages ////
+
+        //////////////////////// Images ////////////////////////////////
+
+
+
+
+
+        //////////////////////////////////////////////////////////////
+
+        //////////////////////// Passages //////////////////////////////
 
 
         try{

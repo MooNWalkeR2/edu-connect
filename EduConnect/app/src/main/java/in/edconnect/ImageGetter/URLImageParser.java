@@ -75,6 +75,15 @@ public class URLImageParser implements Html.ImageGetter{
 
         public Drawable fetchDrawable(String urlString) {
             try {
+                Log.e("URLString",urlString);
+
+                /////////////// CHEKC IF IMAGE IS ALREADY PRESENT IN THE DATABASE OR NOT AND IF IT IS THEN SET DRAWABLE AND RETURN ////////////
+
+
+
+
+
+                /////////////////////////////////////////////////////////////////////////////////////
                 InputStream is = fetch(urlString);
                 Drawable drawable = Drawable.createFromStream(is, "src");
                 drawable.setBounds(0, 0, 0 + drawable.getIntrinsicWidth(), 0
